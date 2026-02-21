@@ -11,40 +11,46 @@
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #f3f4f6; 
-            color: #000;
+            color: #1f2937;
         }
         
         /* Pengaturan Khusus Kertas A4 & Print */
         @page {
-            size: A4 landscape; /* Mendatar agar kolom muat banyak */
+            size: A4 portrait;
             margin: 15mm;
         }
 
+        /* Tampilan Khusus Saat di Print */
         @media print {
             body { 
                 background-color: #fff; 
             }
-            .print-hidden { 
+            .screen-only { 
                 display: none !important; 
             }
-            .page-break-avoid {
-                page-break-inside: avoid;
+            .print-only {
+                display: block !important;
             }
-            .a4-container {
-                box-shadow: none !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-                max-width: 100% !important;
+            /* Format A4 untuk form tunggal */
+            .a4-form {
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                font-size: 12px; /* Ukuran font ideal untuk A4 */
             }
-            table {
-                font-size: 10px; /* Ukuran font dikecilkan saat diprint agar muat 1 lembar */
-            }
-            th {
-                background-color: #f3f4f6 !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
+            .a4-form h1 { font-size: 18px; }
+            .a4-form h2 { font-size: 16px; }
+            .a4-form h3 { font-size: 14px; margin-top: 10px; margin-bottom: 5px; }
+            .a4-form table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+            .a4-form td, .a4-form th { padding: 4px 6px; border: 1px solid #d1d5db; vertical-align: top; }
+            .a4-form th { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; color-adjust: exact; font-weight: bold; width: 35%;}
+        }
+
+        /* Sembunyikan form cetak saat di layar monitor */
+        .print-only {
+            display: none;
         }
 
         .loader {
@@ -56,65 +62,57 @@
 </head>
 <body class="p-4 md:p-8">
 
-    <!-- Tombol Print & Kembali (Disembunyikan saat di-print) -->
-    <div class="print-hidden fixed top-6 right-6 flex space-x-3 z-50">
-        <a href="admin.html" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg shadow-lg font-medium transition flex items-center">
-            <i class="fas fa-arrow-left mr-2"></i> Kembali
-        </a>
-        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-lg font-bold transition flex items-center">
-            <i class="fas fa-print mr-2"></i> Cetak A4
-        </button>
-    </div>
-
     <!-- Alert Jika Belum Login -->
-    <div id="auth-alert" class="hidden text-center mt-20 print-hidden">
+    <div id="auth-alert" class="hidden text-center mt-20 screen-only">
         <i class="fas fa-lock text-5xl text-red-500 mb-4"></i>
         <h2 class="text-2xl font-bold">Akses Ditolak</h2>
         <p class="text-gray-600 mt-2 mb-4">Anda harus login sebagai Admin untuk melihat halaman ini.</p>
         <a href="admin.html" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium">Ke Halaman Login</a>
     </div>
 
-    <!-- Kertas A4 (Container Utama) -->
-    <div id="print-area" class="a4-container bg-white mx-auto max-w-6xl p-8 rounded-xl shadow-xl hidden">
-        
-        <!-- Header Laporan -->
-        <div class="text-center border-b-2 border-black pb-4 mb-6">
-            <h1 class="text-2xl font-bold uppercase tracking-wide">Laporan Data Pendaftar SPMB</h1>
-            <h2 class="text-xl font-bold uppercase tracking-wide">SMP Negeri 1 Bandar Seikijang</h2>
-            <p class="text-sm mt-1">Tahun Ajaran 2026/2027</p>
-            <p class="text-xs text-gray-600 mt-1">Dicetak pada: <span id="print-date"></span></p>
-        </div>
-
-        <!-- Tabel Data -->
-        <table class="w-full border-collapse border border-gray-300 text-xs text-left">
-            <thead>
-                <tr class="bg-gray-100 border border-gray-300 uppercase tracking-wider">
-                    <th class="border border-gray-300 px-2 py-2 text-center w-8">No</th>
-                    <th class="border border-gray-300 px-2 py-2">NISN / Nama Pendaftar</th>
-                    <th class="border border-gray-300 px-2 py-2 text-center">L/P</th>
-                    <th class="border border-gray-300 px-2 py-2">Asal SD</th>
-                    <th class="border border-gray-300 px-2 py-2">Jalur</th>
-                    <th class="border border-gray-300 px-2 py-2 text-right">Nilai</th>
-                    <th class="border border-gray-300 px-2 py-2 text-right">Jarak</th>
-                    <th class="border border-gray-300 px-2 py-2">No. HP</th>
-                    <th class="border border-gray-300 px-2 py-2">Waktu Daftar</th>
-                </tr>
-            </thead>
-            <tbody id="print-tabel-body">
-                <tr><td colspan="9" class="text-center py-10"><div class="loader mx-auto"></div><p class="mt-2">Memuat data...</p></td></tr>
-            </tbody>
-        </table>
-
-        <!-- Tanda Tangan -->
-        <div class="mt-12 flex justify-end">
-            <div class="text-center w-64">
-                <p class="text-sm mb-16">Bandar Seikijang, ...................... 2026</p>
-                <p class="text-sm font-bold">Panitia SPMB</p>
-                <div class="border-b border-black mt-16"></div>
-                <p class="text-xs mt-1">NIP. ........................................</p>
+    <!-- ========================================== -->
+    <!-- TAMPILAN MONITOR (DAFTAR SISWA)            -->
+    <!-- ========================================== -->
+    <div id="list-area" class="screen-only max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-lg hidden">
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">Menu Cetak Berkas Siswa</h2>
+                <p class="text-sm text-gray-500">Pilih siswa dan klik tombol cetak untuk memprint formulir A4 per siswa.</p>
             </div>
+            <a href="admin.html" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i> Kembali ke Admin
+            </a>
         </div>
 
+        <div class="relative w-full sm:w-72 mb-4">
+            <input type="text" id="search-print" placeholder="Cari Nama / NISN..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
+                    <tr class="bg-blue-50 text-gray-700 text-xs uppercase tracking-wider border-y border-blue-200">
+                        <th class="p-3">No</th>
+                        <th class="p-3">NISN</th>
+                        <th class="p-3">Nama Pendaftar</th>
+                        <th class="p-3">Asal Sekolah</th>
+                        <th class="p-3">Jalur</th>
+                        <th class="p-3 text-right">Aksi Cetak</th>
+                    </tr>
+                </thead>
+                <tbody id="list-tabel-body" class="text-sm">
+                    <tr><td colspan="6" class="text-center py-10"><div class="loader mx-auto"></div><p class="mt-2 text-gray-500">Memuat data...</p></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAMPILAN PRINT (FORMULIR A4 1 SISWA)       -->
+    <!-- ========================================== -->
+    <div id="print-area" class="print-only a4-form">
+        <!-- Akan diisi otomatis oleh JavaScript saat tombol print diklik -->
     </div>
 
     <!-- FIREBASE & LOGIC SCRIPT -->
@@ -140,79 +138,180 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // Set Tanggal Cetak Otomatis
-        document.getElementById('print-date').innerText = new Date().toLocaleDateString('id-ID', { 
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-        });
+        let allData = [];
 
         // Cek Login Admin
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('auth-alert').classList.add('hidden');
-                document.getElementById('print-area').classList.remove('hidden');
-                loadDataPrint();
+                document.getElementById('list-area').classList.remove('hidden');
+                loadDataList();
             } else {
                 document.getElementById('auth-alert').classList.remove('hidden');
-                document.getElementById('print-area').classList.add('hidden');
+                document.getElementById('list-area').classList.add('hidden');
             }
         });
 
-        function loadDataPrint() {
+        function loadDataList() {
             const pendaftarRef = ref(db, 'pendaftar');
             onValue(pendaftarRef, (snapshot) => {
                 const data = snapshot.val();
-                let allData = [];
-                
+                allData = [];
                 if (data) {
                     for (let id in data) {
-                        allData.push(data[id]);
+                        allData.push({ id: id, ...data[id] });
                     }
                 }
-                
-                // Urutkan berdasarkan Nama (A-Z) agar rapi saat diprint
-                allData.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
-                renderTable(allData);
+                // Urutkan data berdasarkan waktu terbaru
+                allData.sort((a, b) => (b.waktu_daftar || 0) - (a.waktu_daftar || 0));
+                renderListTable(allData);
             });
         }
 
-        function renderTable(dataArray) {
-            const tbody = document.getElementById('print-tabel-body');
+        function renderListTable(dataArray) {
+            const tbody = document.getElementById('list-tabel-body');
             tbody.innerHTML = '';
 
             if(dataArray.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 italic">Belum ada data pendaftar.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 italic text-gray-500">Belum ada data pendaftar.</td></tr>`;
                 return;
             }
 
             dataArray.forEach((p, index) => {
-                let tglStr = "-";
-                if(p.waktu_daftar) {
-                    const d = new Date(p.waktu_daftar);
-                    tglStr = `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)}/${d.getFullYear()}`;
-                }
+                let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : 'purple');
 
-                let displayNilai = new Intl.NumberFormat('id-ID').format(p.nilai || 0);
-                let jkSingkat = p.jenis_kelamin === 'Laki-laki' ? 'L' : (p.jenis_kelamin === 'Perempuan' ? 'P' : '-');
-
-                // page-break-avoid mencegah baris terbelah dua saat ganti kertas
                 tbody.innerHTML += `
-                    <tr class="page-break-avoid hover:bg-gray-50">
-                        <td class="border border-gray-300 px-2 py-1.5 text-center">${index + 1}</td>
-                        <td class="border border-gray-300 px-2 py-1.5">
-                            <span class="font-bold">${p.nama || '-'}</span><br>
-                            <span class="font-mono text-gray-600 text-[10px]">${p.nisn || '-'}</span>
+                    <tr class="hover:bg-gray-50 border-b border-gray-100 transition">
+                        <td class="p-3 text-center text-gray-500">${index + 1}</td>
+                        <td class="p-3 font-mono font-medium">${p.nisn || '-'}</td>
+                        <td class="p-3 font-bold text-gray-800">${p.nama || '-'}</td>
+                        <td class="p-3 text-gray-600">${p.asal_sekolah || '-'}</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur || '-'}</span></td>
+                        <td class="p-3 text-right">
+                            <button class="btn-print bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg shadow-sm text-xs font-bold transition flex items-center justify-end ml-auto" data-index="${index}">
+                                <i class="fas fa-print mr-1.5"></i> Cetak Form
+                            </button>
                         </td>
-                        <td class="border border-gray-300 px-2 py-1.5 text-center">${jkSingkat}</td>
-                        <td class="border border-gray-300 px-2 py-1.5">${p.asal_sekolah || '-'}</td>
-                        <td class="border border-gray-300 px-2 py-1.5">${p.jalur || '-'}</td>
-                        <td class="border border-gray-300 px-2 py-1.5 text-right font-medium">${displayNilai}</td>
-                        <td class="border border-gray-300 px-2 py-1.5 text-right font-medium">${p.jarak_km || 0} Km</td>
-                        <td class="border border-gray-300 px-2 py-1.5">${p.hp_siswa || '-'}</td>
-                        <td class="border border-gray-300 px-2 py-1.5 text-xs text-gray-600">${tglStr}</td>
                     </tr>
                 `;
             });
+
+            // Pasang listener untuk tombol print
+            document.querySelectorAll('.btn-print').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.currentTarget.getAttribute('data-index');
+                    preparePrintData(dataArray[idx]);
+                });
+            });
         }
+
+        // Fitur Pencarian
+        document.getElementById('search-print').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase();
+            const filtered = allData.filter(p => 
+                (p.nama && p.nama.toLowerCase().includes(q)) || 
+                (p.nisn && p.nisn.includes(q))
+            );
+            renderListTable(filtered);
+        });
+
+        // ==============================================================================
+        // FUNGSI MENYIAPKAN DATA KE DALAM FORM A4 LALU MENCETAKNYA
+        // ==============================================================================
+        window.preparePrintData = function(p) {
+            const printArea = document.getElementById('print-area');
+            const formatNum = (val) => val ? new Intl.NumberFormat('id-ID').format(val) : '-';
+            
+            let tglStr = "-";
+            if(p.waktu_daftar) {
+                const d = new Date(p.waktu_daftar);
+                tglStr = `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)}/${d.getFullYear()} ${('0'+d.getHours()).slice(-2)}:${('0'+d.getMinutes()).slice(-2)}`;
+            }
+
+            // Desain Formulir Bukti Pendaftaran A4
+            let html = `
+                <div class="text-center border-b-[3px] border-black pb-3 mb-4">
+                    <h1 class="font-extrabold uppercase tracking-widest leading-tight">FORMULIR PENDAFTARAN SPMB ONLINE</h1>
+                    <h2 class="font-bold uppercase tracking-widest text-gray-800">SMP NEGERI 1 BANDAR SEIKIJANG</h2>
+                    <p class="text-sm">Tahun Ajaran 2026/2027</p>
+                </div>
+                
+                <div class="flex justify-between mb-4 text-xs font-mono">
+                    <p><strong>Waktu Daftar:</strong> ${tglStr}</p>
+                    <p><strong>Jalur:</strong> ${p.jalur}</p>
+                </div>
+
+                <h3 class="font-bold uppercase bg-gray-100 py-1 px-2 border border-gray-300">A. Data Peserta Didik</h3>
+                <table>
+                    <tr><th>NISN</th><td>${p.nisn || '-'}</td></tr>
+                    <tr><th>Nama Lengkap</th><td class="font-bold">${p.nama || '-'}</td></tr>
+                    <tr><th>Jenis Kelamin</th><td>${p.jenis_kelamin || '-'}</td></tr>
+                    <tr><th>Tempat, Tanggal Lahir</th><td>${p.tempat_lahir || '-'}, ${p.tanggal_lahir || '-'}</td></tr>
+                    <tr><th>Agama</th><td>${p.agama || '-'}</td></tr>
+                    <tr><th>No. HP Siswa / Ortu</th><td>${p.hp_siswa || '-'}</td></tr>
+                    <tr><th>Alamat Lengkap</th><td>${p.alamat || '-'}</td></tr>
+                    <tr><th>Tinggal Bersama</th><td>${p.tempat_tinggal || '-'}</td></tr>
+                    <tr><th>Transportasi ke Sekolah</th><td>${p.transportasi || '-'}</td></tr>
+                </table>
+
+                <h3 class="font-bold uppercase bg-gray-100 py-1 px-2 border border-gray-300">B. Data Sekolah Asal & Nilai</h3>
+                <table>
+                    <tr><th>Asal Sekolah (SD/MI)</th><td class="font-bold">${p.asal_sekolah || '-'}</td></tr>
+                    <tr><th>Rata-rata Nilai Ijazah</th><td>${formatNum(p.nilai)}</td></tr>
+                    <tr><th>Nilai TKA</th><td>${formatNum(p.nilai_tka)}</td></tr>
+                    <tr><th>Jarak ke Sekolah</th><td>${formatNum(p.jarak_km)} Km</td></tr>
+                </table>
+
+                <h3 class="font-bold uppercase bg-gray-100 py-1 px-2 border border-gray-300">C. Data Orang Tua / Wali</h3>
+                <table>
+                    <tr><th>Nama Ayah Kandung</th><td>${p.ayah_nama || '-'} <span class="text-xs text-gray-500">(${p.ayah_status || '-'})</span></td></tr>
+                    <tr><th>Pekerjaan Ayah</th><td>${p.ayah_pekerjaan || '-'}</td></tr>
+                    <tr><th>Nama Ibu Kandung</th><td>${p.ibu_nama || '-'} <span class="text-xs text-gray-500">(${p.ibu_status || '-'})</span></td></tr>
+                    <tr><th>Pekerjaan Ibu</th><td>${p.ibu_pekerjaan || '-'}</td></tr>
+                    <tr><th>Data Wali (Jika ada)</th><td>Nama: ${p.wali_nama || '-'} | Pekerjaan: ${p.wali_pekerjaan || '-'} | HP: ${p.wali_hp || '-'}</td></tr>
+                </table>
+
+                <h3 class="font-bold uppercase bg-gray-100 py-1 px-2 border border-gray-300">D. Kelengkapan Dokumen Fisik</h3>
+                <p class="text-xs italic mb-1">*Dokumen ini akan dicek silang saat verifikasi berkas ke sekolah.</p>
+                <table>
+                    <tr>
+                        <td class="w-1/2">
+                            1. Akte Kelahiran: <strong>${p.dok_akte || '-'}</strong><br>
+                            2. Kartu Keluarga: <strong>${p.dok_kk || '-'}</strong><br>
+                            3. KIP / PIP: <strong>${p.dok_kip === 'Ada' ? 'Ada (' + p.no_kip + ')' : 'Tidak'}</strong>
+                        </td>
+                        <td class="w-1/2 border-l border-gray-300">
+                            4. Ijazah SD / SKL: <strong>Ada</strong><br>
+                            5. Ijazah TK: <strong>${p.dok_ijazah_tk || '-'}</strong><br>
+                            6. Ijazah MDA: <strong>${p.dok_ijazah_mda || '-'}</strong>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="mt-8 text-sm">
+                    <p class="mb-8">Demikian formulir ini diisi dengan data yang sebenar-benarnya untuk digunakan sebagaimana mestinya.</p>
+                    <table style="border:none;">
+                        <tr>
+                            <td style="border:none; text-align:center; width:50%;">
+                                <p class="mb-16">Panitia Pendaftaran SPMB,</p>
+                                <p class="font-bold border-b border-black inline-block px-4">( ............................................ )</p>
+                            </td>
+                            <td style="border:none; text-align:center; width:50%;">
+                                <p class="mb-16">Pendaftar / Orang Tua Wali,</p>
+                                <p class="font-bold border-b border-black inline-block px-4">${p.nama || '............................................'}</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+
+            printArea.innerHTML = html;
+            
+            // Jeda sedikit agar DOM selesai me-render HTML sebelum print dialog muncul
+            setTimeout(() => {
+                window.print();
+            }, 300);
+        };
     </script>
 </body>
 </html>
