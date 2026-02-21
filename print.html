@@ -24,6 +24,7 @@
         @media print {
             body { 
                 background-color: #fff; 
+                color: #000;
             }
             .screen-only { 
                 display: none !important; 
@@ -38,14 +39,31 @@
                 margin: 0;
                 padding: 0;
                 box-shadow: none;
-                font-size: 12px; /* Ukuran font ideal untuk A4 */
+                font-size: 11px; /* Ukuran font dikecilkan agar tabel lebih rendah */
             }
-            .a4-form h1 { font-size: 18px; }
-            .a4-form h2 { font-size: 16px; }
-            .a4-form h3 { font-size: 14px; margin-top: 10px; margin-bottom: 5px; }
-            .a4-form table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-            .a4-form td, .a4-form th { padding: 4px 6px; border: 1px solid #d1d5db; vertical-align: top; }
-            .a4-form th { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; color-adjust: exact; font-weight: bold; width: 35%;}
+            .a4-form h1 { font-size: 16px; }
+            .a4-form h2 { font-size: 14px; }
+            .a4-form h3 { 
+                font-size: 12px; 
+                margin-top: 12px; 
+                margin-bottom: 4px; 
+            }
+            .a4-form table { 
+                width: 100%; 
+                border-collapse: collapse; 
+                margin-bottom: 12px; 
+            }
+            .a4-form td, .a4-form th { 
+                padding: 3px 6px; /* Padding dikurangi agar baris lebih rendah/rapat */
+                border: 1px solid #000; /* Border hitam murni untuk print */
+                vertical-align: middle; 
+                text-align: left; /* Rata kiri semua */
+            }
+            .a4-form th { 
+                background-color: transparent !important; /* Hilangkan warna abu-abu */
+                font-weight: 600; 
+                width: 28%; /* Lebar kolom label disesuaikan agar isian pas */
+            }
         }
 
         /* Sembunyikan form cetak saat di layar monitor */
@@ -228,20 +246,20 @@
                 tglStr = `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)}/${d.getFullYear()} ${('0'+d.getHours()).slice(-2)}:${('0'+d.getMinutes()).slice(-2)}`;
             }
 
-            // Desain Formulir Bukti Pendaftaran A4
+            // Desain Formulir Bukti Pendaftaran A4 (Tanpa Warna & Rata Kiri)
             let html = `
                 <div class="text-center border-b-[3px] border-black pb-3 mb-4">
                     <h1 class="font-extrabold uppercase tracking-widest leading-tight">FORMULIR PENDAFTARAN SPMB ONLINE</h1>
-                    <h2 class="font-bold uppercase tracking-widest text-gray-800">SMP NEGERI 1 BANDAR SEIKIJANG</h2>
+                    <h2 class="font-bold uppercase tracking-widest">SMP NEGERI 1 BANDAR SEIKIJANG</h2>
                     <p class="text-sm">Tahun Ajaran 2026/2027</p>
                 </div>
                 
-                <div class="flex justify-between mb-4 text-xs font-mono">
-                    <p><strong>Waktu Daftar:</strong> ${tglStr}</p>
-                    <p><strong>Jalur:</strong> ${p.jalur}</p>
+                <div class="flex justify-between mb-2 text-xs font-mono">
+                    <p>Waktu Daftar: ${tglStr}</p>
+                    <p>Jalur: ${p.jalur}</p>
                 </div>
 
-                <h3 class="font-bold uppercase bg-gray-100 py-1 px-2 border border-gray-300">A. Data Peserta Didik</h3>
+                <h3 class="font-bold uppercase border border-black px-2 py-1 mb-1">A. Data Peserta Didik</h3>
                 <table>
                     <tr><th>NISN</th><td>${p.nisn || '-'}</td></tr>
                     <tr><th>Nama Lengkap</th><td class="font-bold">${p.nama || '-'}</td></tr>
@@ -254,7 +272,7 @@
                     <tr><th>Transportasi ke Sekolah</th><td>${p.transportasi || '-'}</td></tr>
                 </table>
 
-                <h3 class="font-bold uppercase bg-gray-100 py-1 px-2 border border-gray-300">B. Data Sekolah Asal & Nilai</h3>
+                <h3 class="font-bold uppercase border border-black px-2 py-1 mb-1">B. Data Sekolah Asal & Nilai</h3>
                 <table>
                     <tr><th>Asal Sekolah (SD/MI)</th><td class="font-bold">${p.asal_sekolah || '-'}</td></tr>
                     <tr><th>Rata-rata Nilai Ijazah</th><td>${formatNum(p.nilai)}</td></tr>
@@ -262,17 +280,17 @@
                     <tr><th>Jarak ke Sekolah</th><td>${formatNum(p.jarak_km)} Km</td></tr>
                 </table>
 
-                <h3 class="font-bold uppercase bg-gray-100 py-1 px-2 border border-gray-300">C. Data Orang Tua / Wali</h3>
+                <h3 class="font-bold uppercase border border-black px-2 py-1 mb-1">C. Data Orang Tua / Wali</h3>
                 <table>
-                    <tr><th>Nama Ayah Kandung</th><td>${p.ayah_nama || '-'} <span class="text-xs text-gray-500">(${p.ayah_status || '-'})</span></td></tr>
+                    <tr><th>Nama Ayah Kandung</th><td>${p.ayah_nama || '-'} <span class="text-[10px]">(${p.ayah_status || '-'})</span></td></tr>
                     <tr><th>Pekerjaan Ayah</th><td>${p.ayah_pekerjaan || '-'}</td></tr>
-                    <tr><th>Nama Ibu Kandung</th><td>${p.ibu_nama || '-'} <span class="text-xs text-gray-500">(${p.ibu_status || '-'})</span></td></tr>
+                    <tr><th>Nama Ibu Kandung</th><td>${p.ibu_nama || '-'} <span class="text-[10px]">(${p.ibu_status || '-'})</span></td></tr>
                     <tr><th>Pekerjaan Ibu</th><td>${p.ibu_pekerjaan || '-'}</td></tr>
                     <tr><th>Data Wali (Jika ada)</th><td>Nama: ${p.wali_nama || '-'} | Pekerjaan: ${p.wali_pekerjaan || '-'} | HP: ${p.wali_hp || '-'}</td></tr>
                 </table>
 
-                <h3 class="font-bold uppercase bg-gray-100 py-1 px-2 border border-gray-300">D. Kelengkapan Dokumen Fisik</h3>
-                <p class="text-xs italic mb-1">*Dokumen ini akan dicek silang saat verifikasi berkas ke sekolah.</p>
+                <h3 class="font-bold uppercase border border-black px-2 py-1 mb-1">D. Kelengkapan Dokumen Fisik</h3>
+                <p class="text-[10px] italic mb-1">*Dokumen ini akan dicek silang saat verifikasi berkas ke sekolah.</p>
                 <table>
                     <tr>
                         <td class="w-1/2">
@@ -280,7 +298,7 @@
                             2. Kartu Keluarga: <strong>${p.dok_kk || '-'}</strong><br>
                             3. KIP / PIP: <strong>${p.dok_kip === 'Ada' ? 'Ada (' + p.no_kip + ')' : 'Tidak'}</strong>
                         </td>
-                        <td class="w-1/2 border-l border-gray-300">
+                        <td class="w-1/2 border-l border-black">
                             4. Ijazah SD / SKL: <strong>Ada</strong><br>
                             5. Ijazah TK: <strong>${p.dok_ijazah_tk || '-'}</strong><br>
                             6. Ijazah MDA: <strong>${p.dok_ijazah_mda || '-'}</strong>
@@ -288,16 +306,16 @@
                     </tr>
                 </table>
 
-                <div class="mt-8 text-sm">
+                <div class="mt-8 text-xs">
                     <p class="mb-8">Demikian formulir ini diisi dengan data yang sebenar-benarnya untuk digunakan sebagaimana mestinya.</p>
                     <table style="border:none;">
                         <tr>
                             <td style="border:none; text-align:center; width:50%;">
-                                <p class="mb-16">Panitia Pendaftaran SPMB,</p>
+                                <p class="mb-14">Panitia Pendaftaran SPMB,</p>
                                 <p class="font-bold border-b border-black inline-block px-4">( ............................................ )</p>
                             </td>
                             <td style="border:none; text-align:center; width:50%;">
-                                <p class="mb-16">Pendaftar / Orang Tua Wali,</p>
+                                <p class="mb-14">Pendaftar / Orang Tua Wali,</p>
                                 <p class="font-bold border-b border-black inline-block px-4">${p.nama || '............................................'}</p>
                             </td>
                         </tr>
