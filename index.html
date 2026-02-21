@@ -285,17 +285,17 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Rata - Rata Nilai Ijazah / SKL *</label>
                                 <input type="text" inputmode="decimal" id="fd_nilai" required class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 85,50">
-                                <p class="text-xs text-gray-500 mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
+                                <p class="text-xs text-red-500 font-medium mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nilai TKA (Opsional)</label>
                                 <input type="text" inputmode="decimal" id="fd_nilai_tka" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 85,50">
-                                <p class="text-xs text-gray-500 mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
+                                <p class="text-xs text-red-500 font-medium mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke Sekolah (Kilometer) *</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke SMP (Kilometer) *</label>
                                 <input type="text" inputmode="decimal" id="fd_jarak" required class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 1,5">
-                                <p class="text-xs text-gray-500 mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
+                                <p class="text-xs text-red-500 font-medium mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
                             </div>
                         </div>
                     </div>
@@ -348,13 +348,15 @@
                                 <th class="p-4 border-b-2 border-gray-200">Nama Siswa</th>
                                 <th class="p-4 border-b-2 border-gray-200">Asal Sekolah</th>
                                 <th class="p-4 border-b-2 border-gray-200">Jalur</th>
-                                <th class="p-4 border-b-2 border-gray-200">Nilai</th>
+                                <th class="p-4 border-b-2 border-gray-200">Nilai RP</th>
+                                <th class="p-4 border-b-2 border-gray-200">TKA</th>
                                 <th class="p-4 border-b-2 border-gray-200">Jarak (Km)</th>
+                                <th class="p-4 border-b-2 border-gray-200 text-center">Status Seleksi</th>
                                 <th class="p-4 border-b-2 border-gray-200 text-center">Waktu Daftar</th>
                             </tr>
                         </thead>
                         <tbody id="tabel-body" class="text-sm">
-                            <tr><td colspan="8" class="text-center py-8 text-gray-500">Memuat data pendaftar...</td></tr>
+                            <tr><td colspan="10" class="text-center py-8 text-gray-500">Memuat data pendaftar...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -711,6 +713,11 @@
                     let colorJalur = p.jalur === 'Domisili' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : (p.jalur === 'Mutasi' ? 'red' : 'purple'));
                     // Format output nilai kembali ke bentuk desimal berkoma ala Indonesia
                     let displayNilai = new Intl.NumberFormat('id-ID').format(p.nilai || 0);
+                    let displayTKA = p.nilai_tka ? new Intl.NumberFormat('id-ID').format(p.nilai_tka) : '-';
+                    
+                    // Logika Status Seleksi
+                    let statusSeleksi = p.status_seleksi || 'PROSES';
+                    let statusColor = statusSeleksi === 'Diterima' ? 'green' : (statusSeleksi === 'Ditolak' ? 'red' : 'yellow');
 
                     tbody.innerHTML += `
                         <tr class="hover:bg-blue-50 border-b border-gray-100">
@@ -720,13 +727,17 @@
                             <td class="p-4 text-gray-700">${p.asal_sekolah}</td>
                             <td class="p-4"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur}</span></td>
                             <td class="p-4 font-bold text-secondary">${displayNilai}</td>
+                            <td class="p-4 font-bold text-gray-600">${displayTKA}</td>
                             <td class="p-4 text-gray-600">${p.jarak_km}</td>
+                            <td class="p-4 text-center">
+                                <span class="px-2 py-1 bg-${statusColor}-100 text-${statusColor}-800 rounded text-xs font-bold uppercase tracking-wider">${statusSeleksi}</span>
+                            </td>
                             <td class="p-4 text-center text-xs text-gray-500">${tglStr}</td>
                         </tr>
                     `;
                 });
             } else {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">Data pendaftar tidak ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-gray-500">Data pendaftar tidak ditemukan.</td></tr>`;
             }
         }
 
