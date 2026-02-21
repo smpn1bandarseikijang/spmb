@@ -8,29 +8,21 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .fade-in {
-            animation: fadeIn 0.4s ease-in-out;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .loader {
+            border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #ffffff;
+            width: 20px; height: 20px; -webkit-animation: spin 1s linear infinite; animation: spin 1s linear infinite;
+            display: inline-block; margin-right: 8px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1e3a8a', // blue-900
-                        secondary: '#3b82f6', // blue-500
-                        accent: '#f59e0b', // amber-500
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { primary: '#1e3a8a', secondary: '#3b82f6', accent: '#f59e0b' } } } }
     </script>
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen text-gray-800">
@@ -51,73 +43,55 @@
                     <button onclick="navigate('register')" class="hover:text-accent transition font-medium">Pendaftaran</button>
                     <button onclick="navigate('ranking')" class="hover:text-accent transition font-medium">Hasil Seleksi</button>
                 </div>
-                <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center">
-                    <button onclick="toggleMobileMenu()" class="text-white hover:text-accent focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
+                    <button onclick="toggleMobileMenu()" class="text-white hover:text-accent focus:outline-none"><i class="fas fa-bars text-2xl"></i></button>
                 </div>
             </div>
         </div>
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-blue-800 pb-4 px-4 shadow-inner">
-            <button onclick="navigate('home')" class="block w-full text-left py-2 hover:text-accent font-medium">Beranda</button>
-            <button onclick="navigate('register')" class="block w-full text-left py-2 hover:text-accent font-medium">Pendaftaran</button>
-            <button onclick="navigate('ranking')" class="block w-full text-left py-2 hover:text-accent font-medium">Hasil Seleksi</button>
+            <button onclick="navigate('home')" class="block w-full text-left py-2 px-4 hover:bg-blue-700 font-medium">Beranda</button>
+            <button onclick="navigate('register')" class="block w-full text-left py-2 px-4 hover:bg-blue-700 font-medium">Pendaftaran</button>
+            <button onclick="navigate('ranking')" class="block w-full text-left py-2 px-4 hover:bg-blue-700 font-medium">Hasil Seleksi</button>
         </div>
     </nav>
 
     <!-- Main Content Area -->
     <main class="flex-grow">
-        
         <!-- ================= HOME VIEW ================= -->
         <div id="view-home" class="fade-in block">
-            <!-- Hero Section -->
             <div class="bg-gradient-to-br from-primary via-blue-800 to-secondary text-white py-20 px-4 text-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full">
-                        <path d="M0,100 C30,50 70,50 100,0 L100,100 Z" fill="white"></path>
-                    </svg>
-                </div>
                 <div class="max-w-4xl mx-auto relative z-10">
                     <span class="bg-accent text-primary text-sm font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-4 inline-block shadow-sm">Tahun Ajaran 2026/2027</span>
                     <h2 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">Penerimaan Peserta Didik Baru<br/><span class="text-accent">SMPN 1 Bandar Seikijang</span></h2>
                     <p class="text-lg md:text-xl text-blue-100 mb-10 max-w-2xl mx-auto">Selamat datang di portal resmi PPDB Online. Silakan pilih menu di bawah ini untuk memulai pendaftaran atau melihat status dan peringkat peserta didik.</p>
-                    
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
                         <button onclick="navigate('register')" class="bg-accent hover:bg-yellow-500 text-primary font-bold py-4 px-8 rounded-lg shadow-lg transform transition hover:-translate-y-1 hover:shadow-xl flex items-center justify-center text-lg">
                             <i class="fas fa-user-edit mr-3 text-xl"></i> Pendaftaran Baru
                         </button>
-                        <button onclick="navigate('ranking')" class="bg-white hover:bg-gray-100 text-primary font-bold py-4 px-8 rounded-lg shadow-lg transform transition hover:-translate-y-1 hover:shadow-xl flex items-center justify-center text-lg border-2 border-transparent">
+                        <button onclick="navigate('ranking')" class="bg-white hover:bg-gray-100 text-primary font-bold py-4 px-8 rounded-lg shadow-lg transform transition hover:-translate-y-1 hover:shadow-xl flex items-center justify-center text-lg">
                             <i class="fas fa-list-ol mr-3 text-xl"></i> Lihat Peringkat
                         </button>
                     </div>
                 </div>
             </div>
-
             <!-- Info Section -->
             <div class="max-w-7xl mx-auto px-4 py-16">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition border border-gray-100">
-                        <div class="w-16 h-16 bg-blue-100 text-secondary rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                        <div class="w-16 h-16 bg-blue-100 text-secondary rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-calendar-alt"></i></div>
                         <h3 class="text-xl font-bold mb-2 text-primary">Jadwal PPDB</h3>
                         <p class="text-gray-600">Pendaftaran dibuka mulai 1 Juni 2026 hingga 30 Juni 2026. Jangan sampai terlewat!</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition border border-gray-100">
-                        <div class="w-16 h-16 bg-blue-100 text-secondary rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                        <div class="w-16 h-16 bg-blue-100 text-secondary rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-file-alt"></i></div>
                         <h3 class="text-xl font-bold mb-2 text-primary">Persyaratan</h3>
-                        <p class="text-gray-600">Siapkan SKHU, Kartu Keluarga, Akta Kelahiran, dan pas foto terbaru dalam format digital.</p>
+                        <p class="text-gray-600">Siapkan SKHU, Kartu Keluarga, Akta Kelahiran, dan dokumen lainnya.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition border border-gray-100">
-                        <div class="w-16 h-16 bg-blue-100 text-secondary rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                            <i class="fas fa-headset"></i>
-                        </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                        <div class="w-16 h-16 bg-blue-100 text-secondary rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-headset"></i></div>
                         <h3 class="text-xl font-bold mb-2 text-primary">Pusat Bantuan</h3>
-                        <p class="text-gray-600">Mengalami kendala? Hubungi panitia PPDB SMPN 1 Bandar Seikijang melalui kontak resmi.</p>
+                        <p class="text-gray-600">Mengalami kendala? Hubungi panitia PPDB SMPN 1 Bandar Seikijang.</p>
                     </div>
                 </div>
             </div>
@@ -129,79 +103,43 @@
                 <button onclick="navigate('home')" class="text-gray-500 hover:text-primary mr-4"><i class="fas fa-arrow-left text-xl"></i></button>
                 <h2 class="text-3xl font-bold text-primary border-b-4 border-accent pb-2 inline-block">Form Pendaftaran</h2>
             </div>
-            
             <div class="bg-white rounded-xl shadow-md p-6 md:p-10 border border-gray-100">
                 <p class="text-gray-600 mb-8 border-l-4 border-secondary pl-4 bg-blue-50 py-2">Silakan isi formulir di bawah ini dengan data yang sebenar-benarnya sesuai dengan dokumen resmi yang Anda miliki.</p>
-                
-                <form id="form-pendaftaran" onsubmit="submitForm(event)">
-                    
+                <form id="form-pendaftaran">
                     <!-- 1. Data Peserta Didik -->
                     <div class="mb-10">
                         <h3 class="text-xl font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-user mr-2"></i> Data Peserta Didik</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">NISN (10 Digit) *</label>
-                                <input type="number" required minlength="10" maxlength="10" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Masukkan 10 digit NISN">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label>
-                                <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Sesuai Akta Kelahiran">
-                            </div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">NISN (10 Digit) *</label><input type="number" id="fd_nisn" required minlength="10" maxlength="10" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label><input type="text" id="fd_nama" required class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin *</label>
-                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                    <option value="" disabled selected>Pilih Jenis Kelamin</option>
-                                    <option value="Laki-laki">Laki-laki</option>
-                                    <option value="Perempuan">Perempuan</option>
+                                <select id="fd_jk" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    <option value="" disabled selected>Pilih</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Agama *</label>
-                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                    <option value="" disabled selected>Pilih Agama</option>
-                                    <option value="Islam">Islam</option>
-                                    <option value="Kristen">Kristen</option>
-                                    <option value="Katolik">Katolik</option>
-                                    <option value="Hindu">Hindu</option>
-                                    <option value="Buddha">Buddha</option>
-                                    <option value="Konghucu">Konghucu</option>
+                                <select id="fd_agama" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    <option value="" disabled selected>Pilih</option><option value="Islam">Islam</option><option value="Kristen">Kristen</option><option value="Katolik">Katolik</option><option value="Hindu">Hindu</option><option value="Buddha">Buddha</option><option value="Konghucu">Konghucu</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir (Sesuai Akte) *</label>
-                                <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Tempat Lahir">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir *</label>
-                                <input type="date" value="2013-01-01" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                            </div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir *</label><input type="text" id="fd_tempat_lahir" required class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir *</label><input type="date" id="fd_tgl_lahir" value="2013-01-01" required class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Tinggal *</label>
-                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                    <option value="" disabled selected>Pilih Tempat Tinggal</option>
-                                    <option value="Bersama Orang Tua">Bersama Orang Tua</option>
-                                    <option value="Bersama Wali">Bersama Wali</option>
+                                <select id="fd_tempat_tinggal" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    <option value="" disabled selected>Pilih</option><option value="Bersama Orang Tua">Bersama Orang Tua</option><option value="Bersama Wali">Bersama Wali</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Transportasi Ke Sekolah *</label>
-                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                    <option value="" disabled selected>Pilih Transportasi</option>
-                                    <option value="Bus">Bus</option>
-                                    <option value="Diantar Orang Tua">Diantar Orang Tua</option>
-                                    <option value="Sepeda Motor">Sepeda Motor</option>
-                                    <option value="Jalan Kaki">Jalan Kaki</option>
-                                    <option value="Angkutan Umum">Angkutan Umum</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Transportasi *</label>
+                                <select id="fd_transportasi" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    <option value="" disabled selected>Pilih</option><option value="Bus">Bus</option><option value="Diantar Orang Tua">Diantar Orang Tua</option><option value="Sepeda Motor">Sepeda Motor</option><option value="Jalan Kaki">Jalan Kaki</option><option value="Angkutan Umum">Angkutan Umum</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">No. HP Orang Tua / Siswa *</label>
-                                <input type="tel" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Contoh: 08123456789">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Rumah *</label>
-                                <textarea required rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Alamat lengkap tempat tinggal saat ini"></textarea>
-                            </div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">No. HP Orang Tua/Siswa *</label><input type="tel" id="fd_hp_siswa" required class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                            <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">Alamat Rumah *</label><textarea id="fd_alamat" required rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea></div>
                         </div>
                     </div>
 
@@ -210,46 +148,34 @@
                         <h3 class="text-lg font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-folder-open mr-2"></i> Kelengkapan Dokumen</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Memiliki KIP / PIP</label>
-                                <select id="kip-select" onchange="toggleVisibility('kip-select', 'kip-input-container', 'Ada')" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                    <option value="" disabled selected>Pilih</option>
-                                    <option value="Ada">Ada</option>
-                                    <option value="Tidak">Tidak</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">KIP / PIP</label>
+                                <select id="fd_kip" onchange="toggleVisibility('fd_kip', 'kip-input-container', 'Ada')" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    <option value="" disabled selected>Pilih</option><option value="Ada">Ada</option><option value="Tidak">Tidak</option>
                                 </select>
-                                <div id="kip-input-container" class="hidden mt-2">
-                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Masukkan No. KIP / PIP">
-                                </div>
+                                <div id="kip-input-container" class="hidden mt-2"><input type="text" id="fd_no_kip" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="No. KIP/PIP"></div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Memiliki Ijazah TK</label>
-                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                    <option value="" disabled selected>Pilih</option>
-                                    <option value="Ada">Ada</option>
-                                    <option value="Tidak">Tidak</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Ijazah TK</label>
+                                <select id="fd_ijazah_tk" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    <option value="" disabled selected>Pilih</option><option value="Ada">Ada</option><option value="Tidak">Tidak</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Memiliki Ijazah MDA</label>
-                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                    <option value="" disabled selected>Pilih</option>
-                                    <option value="Ada">Ada</option>
-                                    <option value="Tidak">Tidak</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Ijazah MDA</label>
+                                <select id="fd_ijazah_mda" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    <option value="" disabled selected>Pilih</option><option value="Ada">Ada</option><option value="Tidak">Tidak</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Memiliki Akte Kelahiran</label>
-                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                    <option value="" disabled selected>Pilih</option>
-                                    <option value="Ada">Ada</option>
-                                    <option value="Tidak">Tidak</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Akte Kelahiran</label>
+                                <select id="fd_akte" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    <option value="" disabled selected>Pilih</option><option value="Ada">Ada</option><option value="Tidak">Tidak</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Memiliki Kartu Keluarga</label>
-                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                    <option value="" disabled selected>Pilih</option>
-                                    <option value="Ada">Ada</option>
-                                    <option value="Tidak">Tidak</option>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Kartu Keluarga</label>
+                                <select id="fd_kk" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    <option value="" disabled selected>Pilih</option><option value="Ada">Ada</option><option value="Tidak">Tidak</option>
                                 </select>
                             </div>
                         </div>
@@ -258,150 +184,76 @@
                     <!-- 3. Data Orang Tua & Wali -->
                     <div class="mb-10">
                         <h3 class="text-xl font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-users mr-2"></i> Data Orang Tua & Wali</h3>
-                        
                         <!-- Ayah -->
                         <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-100 mb-6">
                             <h4 class="font-medium text-blue-800 mb-3">Data Ayah Kandung</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap Ayah</label>
-                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nama Ayah">
-                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Nama Ayah</label><input type="text" id="fd_nama_ayah" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Status Ayah</label>
-                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                        <option value="" disabled selected>Pilih Status</option>
-                                        <option value="Masih Hidup">Masih Hidup</option>
-                                        <option value="Sudah Meninggal">Sudah Meninggal</option>
+                                    <select id="fd_status_ayah" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                        <option value="" disabled selected>Pilih</option><option value="Masih Hidup">Masih Hidup</option><option value="Sudah Meninggal">Sudah Meninggal</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan Ayah</label>
-                                    <select id="pekerjaan-ayah" onchange="toggleVisibility('pekerjaan-ayah', 'pekerjaan-ayah-other', 'Lainnya')" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                        <option value="" disabled selected>Pilih Pekerjaan</option>
-                                        <option value="Petani">Petani</option>
-                                        <option value="Karyawan">Karyawan</option>
-                                        <option value="Buruh">Buruh</option>
-                                        <option value="Wiraswasta">Wiraswasta</option>
-                                        <option value="PNS">PNS</option>
-                                        <option value="PPPK">PPPK</option>
-                                        <option value="Guru ASN">Guru ASN</option>
-                                        <option value="Guru Non ASN">Guru Non ASN</option>
-                                        <option value="TNI">TNI</option>
-                                        <option value="Polisi">Polisi</option>
-                                        <option value="Lainnya">Lainnya...</option>
+                                    <select id="fd_pekerjaan_ayah" onchange="toggleVisibility('fd_pekerjaan_ayah', 'kerja-ayah-other', 'Lainnya')" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                        <option value="" disabled selected>Pilih</option>
+                                        <option value="Petani">Petani</option><option value="Karyawan">Karyawan</option><option value="Buruh">Buruh</option><option value="Wiraswasta">Wiraswasta</option><option value="PNS">PNS</option><option value="PPPK">PPPK</option><option value="Guru ASN">Guru ASN</option><option value="Guru Non ASN">Guru Non ASN</option><option value="TNI">TNI</option><option value="Polisi">Polisi</option><option value="Lainnya">Lainnya...</option>
                                     </select>
-                                    <div id="pekerjaan-ayah-other" class="hidden mt-2">
-                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Ketik pekerjaan ayah...">
-                                    </div>
+                                    <div id="kerja-ayah-other" class="hidden mt-2"><input type="text" id="fd_pekerjaan_ayah_lain" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ketik manual..."></div>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">No. HP Ayah</label>
-                                    <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nomor Handphone">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Perkiraan Penghasilan (Rp.)</label>
-                                    <input type="text" value="1.000.000" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Contoh: 1.000.000">
-                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Penghasilan (Rp)</label><input type="text" id="fd_gaji_ayah" value="1.000.000" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
                             </div>
                         </div>
-
                         <!-- Ibu -->
                         <div class="bg-pink-50/50 p-4 rounded-lg border border-pink-100 mb-6">
                             <h4 class="font-medium text-pink-800 mb-3">Data Ibu Kandung</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap Ibu</label>
-                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nama Ibu">
-                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Nama Ibu</label><input type="text" id="fd_nama_ibu" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Status Ibu</label>
-                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                        <option value="" disabled selected>Pilih Status</option>
-                                        <option value="Masih Hidup">Masih Hidup</option>
-                                        <option value="Sudah Meninggal">Sudah Meninggal</option>
+                                    <select id="fd_status_ibu" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                        <option value="" disabled selected>Pilih</option><option value="Masih Hidup">Masih Hidup</option><option value="Sudah Meninggal">Sudah Meninggal</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan Ibu</label>
-                                    <select id="pekerjaan-ibu" onchange="toggleVisibility('pekerjaan-ibu', 'pekerjaan-ibu-other', 'Lainnya')" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                        <option value="" disabled selected>Pilih Pekerjaan</option>
-                                        <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
-                                        <option value="Petani">Petani</option>
-                                        <option value="Karyawan">Karyawan</option>
-                                        <option value="Buruh">Buruh</option>
-                                        <option value="Wiraswasta">Wiraswasta</option>
-                                        <option value="PNS">PNS</option>
-                                        <option value="PPPK">PPPK</option>
-                                        <option value="Guru ASN">Guru ASN</option>
-                                        <option value="Guru Non ASN">Guru Non ASN</option>
-                                        <option value="TNI">TNI</option>
-                                        <option value="Polisi">Polisi</option>
-                                        <option value="Lainnya">Lainnya...</option>
+                                    <select id="fd_pekerjaan_ibu" onchange="toggleVisibility('fd_pekerjaan_ibu', 'kerja-ibu-other', 'Lainnya')" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                        <option value="" disabled selected>Pilih</option>
+                                        <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option><option value="Petani">Petani</option><option value="Karyawan">Karyawan</option><option value="Buruh">Buruh</option><option value="Wiraswasta">Wiraswasta</option><option value="PNS">PNS</option><option value="PPPK">PPPK</option><option value="Guru ASN">Guru ASN</option><option value="Guru Non ASN">Guru Non ASN</option><option value="TNI">TNI</option><option value="Polisi">Polisi</option><option value="Lainnya">Lainnya...</option>
                                     </select>
-                                    <div id="pekerjaan-ibu-other" class="hidden mt-2">
-                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Ketik pekerjaan ibu...">
-                                    </div>
+                                    <div id="kerja-ibu-other" class="hidden mt-2"><input type="text" id="fd_pekerjaan_ibu_lain" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ketik manual..."></div>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">No. HP Ibu</label>
-                                    <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nomor Handphone">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Perkiraan Penghasilan (Rp.)</label>
-                                    <input type="text" value="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Contoh: 1.000.000">
-                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Penghasilan (Rp)</label><input type="text" id="fd_gaji_ibu" value="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
                             </div>
                         </div>
-
                         <!-- Wali -->
                         <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-medium text-gray-700 mb-3">Data Wali <span class="text-xs font-normal text-gray-500">(Isi jika tidak tinggal bersama orang tua)</span></h4>
+                            <h4 class="font-medium text-gray-700 mb-3">Data Wali <span class="text-xs font-normal text-gray-500">(Jika tidak dengan orang tua)</span></h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap Wali</label>
-                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nama Wali">
-                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Nama Wali</label><input type="text" id="fd_nama_wali" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan Wali</label>
-                                    <select id="pekerjaan-wali" onchange="toggleVisibility('pekerjaan-wali', 'pekerjaan-wali-other', 'Lainnya')" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                        <option value="" selected>Pilih Pekerjaan</option>
-                                        <option value="Petani">Petani</option>
-                                        <option value="Karyawan">Karyawan</option>
-                                        <option value="Buruh">Buruh</option>
-                                        <option value="Wiraswasta">Wiraswasta</option>
-                                        <option value="PNS">PNS</option>
-                                        <option value="PPPK">PPPK</option>
-                                        <option value="Guru ASN">Guru ASN</option>
-                                        <option value="Guru Non ASN">Guru Non ASN</option>
-                                        <option value="TNI">TNI</option>
-                                        <option value="Polisi">Polisi</option>
-                                        <option value="Lainnya">Lainnya...</option>
+                                    <select id="fd_pekerjaan_wali" onchange="toggleVisibility('fd_pekerjaan_wali', 'kerja-wali-other', 'Lainnya')" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                        <option value="" selected>Pilih</option>
+                                        <option value="Petani">Petani</option><option value="Karyawan">Karyawan</option><option value="Buruh">Buruh</option><option value="Wiraswasta">Wiraswasta</option><option value="PNS">PNS</option><option value="PPPK">PPPK</option><option value="Guru ASN">Guru ASN</option><option value="Guru Non ASN">Guru Non ASN</option><option value="TNI">TNI</option><option value="Polisi">Polisi</option><option value="Lainnya">Lainnya...</option>
                                     </select>
-                                    <div id="pekerjaan-wali-other" class="hidden mt-2">
-                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Ketik pekerjaan wali...">
-                                    </div>
+                                    <div id="kerja-wali-other" class="hidden mt-2"><input type="text" id="fd_pekerjaan_wali_lain" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ketik manual..."></div>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">No. HP Wali</label>
-                                    <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nomor Handphone">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Perkiraan Penghasilan (Rp.)</label>
-                                    <input type="text" value="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Contoh: 1.000.000">
-                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">No. HP Wali</label><input type="tel" id="fd_hp_wali" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Penghasilan Wali (Rp)</label><input type="text" id="fd_gaji_wali" value="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 4. Data Sekolah Asal & Nilai -->
                     <!-- 4. Data Sekolah Asal & Nilai -->
                     <div class="mb-10">
                         <h3 class="text-xl font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-school mr-2"></i> Data Sekolah Asal & Nilai</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Asal Sekolah *</label>
-                                <select id="asal-sekolah" onchange="toggleVisibility('asal-sekolah', 'asal-sekolah-other', 'SD Lainnya')" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                <select id="fd_asal_sekolah" onchange="toggleVisibility('fd_asal_sekolah', 'asal-sekolah-other', 'SD Lainnya')" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                                     <option value="" disabled selected>Pilih Sekolah Asal</option>
                                     <option value="SDN 008 Seikijang">SDN 008 Seikijang</option>
                                     <option value="SDN 001 Seikijang">SDN 001 Seikijang</option>
@@ -411,43 +263,25 @@
                                     <option value="SDN 11 Kerinci Kiri">SDN 11 Kerinci Kiri</option>
                                     <option value="SD Lainnya">SD Lain...</option>
                                 </select>
-                                <div id="asal-sekolah-other" class="hidden mt-2">
-                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Ketik nama sekolah asal...">
-                                </div>
+                                <div id="asal-sekolah-other" class="hidden mt-2"><input type="text" id="fd_asal_sekolah_lain" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ketik nama sekolah..."></div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Jalur Pendaftaran *</label>
-                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                <select id="fd_jalur" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                                     <option value="" disabled selected>Pilih Jalur</option>
-                                    <option value="Zonasi">Zonasi</option>
-                                    <option value="Prestasi">Prestasi</option>
-                                    <option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option>
-                                    <option value="PindahTugas">Perpindahan Tugas Orang Tua</option>
+                                    <option value="Zonasi">Zonasi</option><option value="Prestasi">Prestasi</option><option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option><option value="PindahTugas">Perpindahan Tugas Orang Tua</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Rata - Rata Nilai Ijazah / SKL *</label>
-                                <input type="number" step="0.01" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Contoh: 85.50">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke Sekolah (Kilometer) *</label>
-                                <input type="number" step="0.1" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Jarak dalam km (Contoh: 1.5)">
-                            </div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Rata - Rata Nilai Ijazah / SKL *</label><input type="number" id="fd_nilai" step="0.01" required class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 85.50"></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke Sekolah (Kilometer) *</label><input type="number" id="fd_jarak" step="0.1" required class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 1.5"></div>
                         </div>
-                    </div>
-
-                    <div class="flex items-start mb-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                        <div class="flex items-center h-5 mt-0.5">
-                            <input id="terms" type="checkbox" required class="w-5 h-5 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-secondary">
-                        </div>
-                        <label for="terms" class="ml-3 text-sm text-gray-700 font-medium leading-relaxed">
-                            Saya menyatakan bahwa data yang diisikan adalah benar dan dapat dipertanggungjawabkan. Jika terbukti memalsukan data, saya bersedia menerima sanksi pembatalan pendaftaran.
-                        </label>
                     </div>
 
                     <div class="flex flex-col sm:flex-row justify-end gap-4 mt-8">
                         <button type="button" onclick="navigate('home')" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition w-full sm:w-auto font-medium">Batal</button>
-                        <button type="submit" class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-800 transition shadow-md w-full sm:w-auto">Kirim Pendaftaran</button>
+                        <button type="submit" id="btn-submit" class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-800 transition shadow-md w-full sm:w-auto flex justify-center items-center">
+                            Kirim Pendaftaran
+                        </button>
                     </div>
                 </form>
             </div>
@@ -459,221 +293,254 @@
                 <button onclick="navigate('home')" class="text-gray-500 hover:text-primary mr-4"><i class="fas fa-arrow-left text-xl"></i></button>
                 <h2 class="text-3xl font-bold text-primary border-b-4 border-accent pb-2 inline-block">Hasil & Peringkat Sementara</h2>
             </div>
-
             <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                    <p class="text-gray-600 text-sm"><i class="fas fa-info-circle text-secondary mr-1"></i> Data diperbarui secara real-time berdasarkan pendaftar yang masuk.</p>
-                    
-                    <div class="flex space-x-2">
-                        <select class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-secondary">
-                            <option>Semua Jalur</option>
-                            <option>Zonasi</option>
-                            <option>Prestasi</option>
-                            <option>Afirmasi</option>
-                        </select>
-                        <div class="relative">
-                            <input type="text" placeholder="Cari Nama/NISN..." class="px-4 py-2 border border-gray-300 rounded-lg text-sm pl-10 focus:outline-none focus:ring-2 focus:ring-secondary w-full md:w-64">
-                            <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
-                        </div>
-                    </div>
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-gray-600 text-sm"><i class="fas fa-satellite-dish text-green-500 mr-1"></i> Data Real-time dari Server</p>
+                    <span id="total-pendaftar" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Total: 0 Pendaftar</span>
                 </div>
-
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-gray-100 text-gray-700 text-sm uppercase tracking-wider">
-                                <th class="p-4 border-b-2 border-gray-200 rounded-tl-lg">Peringkat</th>
-                                <th class="p-4 border-b-2 border-gray-200">No. Daftar</th>
+                                <th class="p-4 border-b-2 border-gray-200">#</th>
+                                <th class="p-4 border-b-2 border-gray-200">NISN</th>
                                 <th class="p-4 border-b-2 border-gray-200">Nama Siswa</th>
-                                <th class="p-4 border-b-2 border-gray-200">Asal Sekolah</th>
                                 <th class="p-4 border-b-2 border-gray-200">Jalur</th>
-                                <th class="p-4 border-b-2 border-gray-200">Skor / Jarak</th>
-                                <th class="p-4 border-b-2 border-gray-200 text-center rounded-tr-lg">Status</th>
+                                <th class="p-4 border-b-2 border-gray-200">Nilai</th>
+                                <th class="p-4 border-b-2 border-gray-200">Jarak (Km)</th>
+                                <th class="p-4 border-b-2 border-gray-200 text-center">Waktu Daftar</th>
                             </tr>
                         </thead>
-                        <tbody class="text-sm">
-                            <!-- Dummy Data 1 -->
-                            <tr class="hover:bg-blue-50 transition border-b border-gray-100">
-                                <td class="p-4 font-bold text-center"><span class="bg-accent text-white w-6 h-6 rounded-full inline-flex items-center justify-center">1</span></td>
-                                <td class="p-4 font-mono text-gray-600">26270001</td>
-                                <td class="p-4 font-bold text-gray-800">Ahmad Fauzi</td>
-                                <td class="p-4 text-gray-600">SDN 001 Seikijang</td>
-                                <td class="p-4"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-semibold">Prestasi</span></td>
-                                <td class="p-4 font-bold text-secondary">92.50</td>
-                                <td class="p-4 text-center"><span class="text-green-600 font-bold"><i class="fas fa-check-circle"></i> Aman</span></td>
-                            </tr>
-                            <!-- Dummy Data 2 -->
-                            <tr class="hover:bg-blue-50 transition border-b border-gray-100">
-                                <td class="p-4 font-bold text-center"><span class="bg-gray-300 text-gray-700 w-6 h-6 rounded-full inline-flex items-center justify-center">2</span></td>
-                                <td class="p-4 font-mono text-gray-600">26270014</td>
-                                <td class="p-4 font-bold text-gray-800">Budi Santoso</td>
-                                <td class="p-4 text-gray-600">SDN 003 Lubuk Ogong</td>
-                                <td class="p-4"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">Zonasi</span></td>
-                                <td class="p-4 font-bold text-secondary">0.45 Km</td>
-                                <td class="p-4 text-center"><span class="text-green-600 font-bold"><i class="fas fa-check-circle"></i> Aman</span></td>
-                            </tr>
-                            <!-- Dummy Data 3 -->
-                            <tr class="hover:bg-blue-50 transition border-b border-gray-100">
-                                <td class="p-4 font-bold text-center"><span class="bg-gray-300 text-gray-700 w-6 h-6 rounded-full inline-flex items-center justify-center">3</span></td>
-                                <td class="p-4 font-mono text-gray-600">26270008</td>
-                                <td class="p-4 font-bold text-gray-800">Citra Kirana</td>
-                                <td class="p-4 text-gray-600">SDN 008 Seikijang</td>
-                                <td class="p-4"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">Zonasi</span></td>
-                                <td class="p-4 font-bold text-secondary">0.60 Km</td>
-                                <td class="p-4 text-center"><span class="text-green-600 font-bold"><i class="fas fa-check-circle"></i> Aman</span></td>
-                            </tr>
-                            <!-- Dummy Data 4 -->
-                            <tr class="hover:bg-blue-50 transition border-b border-gray-100">
-                                <td class="p-4 font-bold text-center text-gray-500">4</td>
-                                <td class="p-4 font-mono text-gray-600">26270022</td>
-                                <td class="p-4 font-bold text-gray-800">Dewi Lestari</td>
-                                <td class="p-4 text-gray-600">SD Lainnya</td>
-                                <td class="p-4"><span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs font-semibold">Afirmasi</span></td>
-                                <td class="p-4 font-bold text-secondary">KIP / KKS</td>
-                                <td class="p-4 text-center"><span class="text-yellow-600 font-bold"><i class="fas fa-clock"></i> Verifikasi</span></td>
-                            </tr>
-                            <!-- Dummy Data 5 -->
-                            <tr class="hover:bg-blue-50 transition border-b border-gray-100">
-                                <td class="p-4 font-bold text-center text-gray-500">5</td>
-                                <td class="p-4 font-mono text-gray-600">26270045</td>
-                                <td class="p-4 font-bold text-gray-800">Eko Pratama</td>
-                                <td class="p-4 text-gray-600">SDN 11 Kerinci Kiri</td>
-                                <td class="p-4"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-semibold">Prestasi</span></td>
-                                <td class="p-4 font-bold text-secondary">88.25</td>
-                                <td class="p-4 text-center"><span class="text-green-600 font-bold"><i class="fas fa-check-circle"></i> Aman</span></td>
-                            </tr>
+                        <tbody id="tabel-body" class="text-sm">
+                            <tr><td colspan="7" class="text-center py-8 text-gray-500">Memuat data pendaftar...</td></tr>
                         </tbody>
                     </table>
                 </div>
-                
-                <!-- Pagination -->
-                <div class="flex items-center justify-between mt-6">
-                    <span class="text-sm text-gray-600">Menampilkan 1-5 dari 45 pendaftar</span>
-                    <div class="flex space-x-1">
-                        <button class="px-3 py-1 border border-gray-300 rounded text-gray-500 hover:bg-gray-100"><i class="fas fa-chevron-left"></i></button>
-                        <button class="px-3 py-1 bg-primary text-white rounded">1</button>
-                        <button class="px-3 py-1 border border-gray-300 rounded text-gray-700 hover:bg-gray-100">2</button>
-                        <button class="px-3 py-1 border border-gray-300 rounded text-gray-700 hover:bg-gray-100">3</button>
-                        <button class="px-3 py-1 border border-gray-300 rounded text-gray-500 hover:bg-gray-100"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                </div>
             </div>
         </div>
-
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 py-8">
-        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-                <h4 class="text-white text-lg font-bold mb-4 flex items-center"><i class="fas fa-school mr-2"></i> SMPN 1 Bandar Seikijang</h4>
-                <p class="text-sm mb-4">Mewujudkan generasi cerdas, berakhlak mulia, dan berbudaya lingkungan. Menerima pendaftaran peserta didik baru tahun ajaran 2026/2027.</p>
-            </div>
-            <div>
-                <h4 class="text-white text-lg font-bold mb-4">Kontak Kami</h4>
-                <ul class="text-sm space-y-2">
-                    <li><i class="fas fa-map-marker-alt mr-2 text-accent"></i> Jl. Lintas Timur, Bandar Seikijang, Pelalawan, Riau</li>
-                    <li><i class="fas fa-phone mr-2 text-accent"></i> (0761) 123456</li>
-                    <li><i class="fas fa-envelope mr-2 text-accent"></i> ppdb@smpn1bandarseikijang.sch.id</li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white text-lg font-bold mb-4">Tautan Penting</h4>
-                <ul class="text-sm space-y-2">
-                    <li><a href="#" class="hover:text-accent transition">Dinas Pendidikan Kab. Pelalawan</a></li>
-                    <li><a href="#" class="hover:text-accent transition">Portal Kemdikbud</a></li>
-                    <li><a href="#" class="hover:text-accent transition">Cek NISN Online</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="border-t border-gray-800 mt-8 pt-6 text-center text-sm">
-            <p>&copy; 2026 Panitia PPDB SMPN 1 Bandar Seikijang. Dikembangkan menggunakan HTML & Tailwind CSS.</p>
-        </div>
-    </footer>
-
-    <!-- Custom Modal/Alert -->
-    <div id="success-modal" class="fixed inset-0 z-[100] bg-black bg-opacity-50 hidden flex-items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full mx-auto mt-20 text-center transform scale-95 transition-transform duration-300">
-            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-check text-4xl text-green-500"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">Pendaftaran Berhasil!</h3>
-            <p class="text-gray-600 mb-6">Data Anda telah tersimpan di sistem kami. Silakan cek menu "Lihat Peringkat" secara berkala.</p>
-            <button onclick="closeModal()" class="w-full bg-primary hover:bg-blue-800 text-white font-bold py-3 rounded-lg transition shadow-md">Tutup & Lanjut</button>
+    <!-- Modal Success/Error -->
+    <div id="alert-modal" class="fixed inset-0 z-[100] bg-black bg-opacity-50 hidden flex-items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full mx-auto mt-20 text-center">
+            <div id="modal-icon" class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"></div>
+            <h3 id="modal-title" class="text-2xl font-bold text-gray-800 mb-2"></h3>
+            <p id="modal-desc" class="text-gray-600 mb-6"></p>
+            <button onclick="closeModal()" class="w-full bg-primary hover:bg-blue-800 text-white font-bold py-3 rounded-lg shadow-md">Tutup</button>
         </div>
     </div>
 
-    <!-- Application Script -->
+    <!-- UI Scripts -->
     <script>
-        // Simple Single Page Application Router Logic
         function navigate(viewName) {
-            // Hide all views
             document.getElementById('view-home').classList.add('hidden');
             document.getElementById('view-register').classList.add('hidden');
             document.getElementById('view-ranking').classList.add('hidden');
-            
-            // Show requested view
-            const viewElement = document.getElementById('view-' + viewName);
-            viewElement.classList.remove('hidden');
-            
-            // Scroll to top
+            document.getElementById('view-' + viewName).classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            // Close mobile menu if open
-            const mobileMenu = document.getElementById('mobile-menu');
-            if(!mobileMenu.classList.contains('hidden')){
-                mobileMenu.classList.add('hidden');
-            }
+            document.getElementById('mobile-menu').classList.add('hidden');
         }
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        function submitForm(event) {
-            event.preventDefault(); // Prevent page reload
-            
-            // Show modal
-            const modal = document.getElementById('success-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            
-            // Reset form
-            document.getElementById('form-pendaftaran').reset();
-            
-            // Reset default date manually if needed
-            document.querySelector('input[type="date"]').value = "2013-01-01";
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('success-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            
-            // Navigate to ranking automatically
-            navigate('ranking');
-        }
-
-        // Script untuk menampilkan form input tambahan (Other/Lainnya)
+        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
         function toggleVisibility(selectId, containerId, triggerValue) {
             const select = document.getElementById(selectId);
             const container = document.getElementById(containerId);
             const input = container.querySelector('input');
-            
             if (select && container) {
                 if (select.value === triggerValue) {
                     container.classList.remove('hidden');
                     if(input) input.setAttribute('required', 'true');
                 } else {
                     container.classList.add('hidden');
-                    if(input) {
-                        input.removeAttribute('required');
-                        input.value = ''; // Mengosongkan isian jika disembunyikan
-                    }
+                    if(input) { input.removeAttribute('required'); input.value = ''; }
                 }
             }
         }
+        function showModal(type, title, message) {
+            const modal = document.getElementById('alert-modal');
+            const icon = document.getElementById('modal-icon');
+            if(type === 'success') {
+                icon.className = "w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4";
+                icon.innerHTML = '<i class="fas fa-check text-4xl text-green-500"></i>';
+            } else {
+                icon.className = "w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4";
+                icon.innerHTML = '<i class="fas fa-times text-4xl text-red-500"></i>';
+            }
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = message;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        function closeModal() {
+            document.getElementById('alert-modal').classList.add('hidden');
+            document.getElementById('alert-modal').classList.remove('flex');
+            if(document.getElementById('modal-title').innerText.includes('Berhasil')) navigate('ranking');
+        }
+    </script>
+
+    <!-- FIREBASE REALTIME DATABASE LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+        // ==============================================================================
+        // TODO: MASUKKAN CONFIG FIREBASE ANDA DI SINI
+        // PENTING: Untuk Realtime Database, pastikan ada atribut "databaseURL" !!
+        // ==============================================================================
+        const firebaseConfig = {
+            apiKey: "GANTI_DENGAN_API_KEY_ANDA",
+            authDomain: "spmb-508e3.firebaseapp.com",
+            // INI YANG PALING PENTING UNTUK REALTIME DATABASE:
+            databaseURL: "https://spmb-508e3-default-rtdb.asia-southeast1.firebasedatabase.app/", 
+            projectId: "spmb-508e3",
+            storageBucket: "spmb-508e3.appspot.com",
+            messagingSenderId: "GANTI_SENDER_ID",
+            appId: "GANTI_APP_ID"
+        };
+
+        // Inisialisasi Firebase
+        let db;
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getDatabase(app);
+            
+            // Login anonim agar koneksi database diijinkan (Best Practice Firebase)
+            const auth = getAuth(app);
+            signInAnonymously(auth).catch((error) => console.log("Auth Anonim error (Mungkin test mode terbuka tanpa auth):", error));
+            
+            console.log("Firebase Realtime DB disiapkan!");
+            loadDataRealtime(); // Jalankan fungsi memuat tabel peringkat
+        } catch (error) {
+            console.error("Gagal inisialisasi Firebase.", error);
+        }
+
+        // Fungsi Membaca Data untuk Tabel Peringkat (REAL-TIME)
+        function loadDataRealtime() {
+            if(firebaseConfig.apiKey === "GANTI_DENGAN_API_KEY_ANDA") return;
+
+            const pendaftarRef = ref(db, 'pendaftar');
+            onValue(pendaftarRef, (snapshot) => {
+                const data = snapshot.val();
+                const tbody = document.getElementById('tabel-body');
+                const totalSpan = document.getElementById('total-pendaftar');
+                
+                if (data) {
+                    tbody.innerHTML = ''; // Bersihkan tabel
+                    let pendaftarArray = [];
+                    
+                    // Ubah object JSON dari Firebase menjadi Array
+                    for (let id in data) {
+                        pendaftarArray.push({ id: id, ...data[id] });
+                    }
+                    
+                    // Urutkan (Ranking) secara sederhana berdasarkan nilai tertinggi (Contoh)
+                    pendaftarArray.sort((a, b) => b.nilai - a.nilai);
+                    
+                    totalSpan.innerText = `Total: ${pendaftarArray.length} Pendaftar`;
+
+                    let no = 1;
+                    pendaftarArray.forEach(p => {
+                        // Format tanggal daftar
+                        let tglStr = "-";
+                        if(p.waktu_daftar) {
+                            const d = new Date(p.waktu_daftar);
+                            tglStr = `${d.getDate()}/${d.getMonth()+1} ${d.getHours()}:${(d.getMinutes()<10?'0':'') + d.getMinutes()}`;
+                        }
+
+                        // Label Warna Jalur
+                        let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : 'purple');
+
+                        tbody.innerHTML += `
+                            <tr class="hover:bg-blue-50 border-b border-gray-100">
+                                <td class="p-4 font-bold text-center">${no++}</td>
+                                <td class="p-4 font-mono text-gray-600">${p.nisn}</td>
+                                <td class="p-4 font-bold text-gray-800">${p.nama}</td>
+                                <td class="p-4"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur}</span></td>
+                                <td class="p-4 font-bold text-secondary">${p.nilai}</td>
+                                <td class="p-4 text-gray-600">${p.jarak_km}</td>
+                                <td class="p-4 text-center text-xs text-gray-500">${tglStr}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-gray-500">Belum ada data pendaftar.</td></tr>`;
+                    totalSpan.innerText = `Total: 0 Pendaftar`;
+                }
+            });
+        }
+
+        // Fungsi Menyimpan Data (Push ke Realtime Database)
+        document.getElementById('form-pendaftaran').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if(firebaseConfig.apiKey === "GANTI_DENGAN_API_KEY_ANDA") {
+                showModal('error', 'Konfigurasi Belum Selesai', 'Anda belum memasukkan kode firebaseConfig Anda ke dalam HTML.');
+                return;
+            }
+
+            const btnSubmit = document.getElementById('btn-submit');
+            const originalBtnText = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<div class="loader"></div> Mengirim...';
+            btnSubmit.disabled = true;
+
+            try {
+                const dataPendaftar = {
+                    nisn: document.getElementById('fd_nisn').value,
+                    nama: document.getElementById('fd_nama').value,
+                    jenis_kelamin: document.getElementById('fd_jk').value,
+                    agama: document.getElementById('fd_agama').value,
+                    tempat_lahir: document.getElementById('fd_tempat_lahir').value,
+                    tanggal_lahir: document.getElementById('fd_tgl_lahir').value,
+                    tempat_tinggal: document.getElementById('fd_tempat_tinggal').value,
+                    transportasi: document.getElementById('fd_transportasi').value,
+                    hp_siswa: document.getElementById('fd_hp_siswa').value,
+                    alamat: document.getElementById('fd_alamat').value,
+                    
+                    dok_kip: document.getElementById('fd_kip').value,
+                    no_kip: document.getElementById('fd_kip').value === 'Ada' ? document.getElementById('fd_no_kip').value : '',
+                    dok_ijazah_tk: document.getElementById('fd_ijazah_tk').value,
+                    dok_ijazah_mda: document.getElementById('fd_ijazah_mda').value,
+                    dok_akte: document.getElementById('fd_akte').value,
+                    dok_kk: document.getElementById('fd_kk').value,
+                    
+                    ayah_nama: document.getElementById('fd_nama_ayah').value,
+                    ayah_status: document.getElementById('fd_status_ayah').value,
+                    ayah_pekerjaan: document.getElementById('fd_pekerjaan_ayah').value === 'Lainnya' ? document.getElementById('fd_pekerjaan_ayah_lain').value : document.getElementById('fd_pekerjaan_ayah').value,
+                    ayah_gaji: document.getElementById('fd_gaji_ayah').value,
+                    
+                    ibu_nama: document.getElementById('fd_nama_ibu').value,
+                    ibu_status: document.getElementById('fd_status_ibu').value,
+                    ibu_pekerjaan: document.getElementById('fd_pekerjaan_ibu').value === 'Lainnya' ? document.getElementById('fd_pekerjaan_ibu_lain').value : document.getElementById('fd_pekerjaan_ibu').value,
+                    ibu_gaji: document.getElementById('fd_gaji_ibu').value,
+
+                    wali_nama: document.getElementById('fd_nama_wali').value || "-",
+                    wali_pekerjaan: document.getElementById('fd_pekerjaan_wali') ? (document.getElementById('fd_pekerjaan_wali').value === 'Lainnya' ? document.getElementById('fd_pekerjaan_wali_lain').value : document.getElementById('fd_pekerjaan_wali').value) : "-",
+                    wali_hp: document.getElementById('fd_hp_wali').value || "-",
+                    wali_gaji: document.getElementById('fd_gaji_wali').value || "0",
+
+                    asal_sekolah: document.getElementById('fd_asal_sekolah').value === 'SD Lainnya' ? document.getElementById('fd_asal_sekolah_lain').value : document.getElementById('fd_asal_sekolah').value,
+                    jalur: document.getElementById('fd_jalur').value,
+                    nilai: parseFloat(document.getElementById('fd_nilai').value),
+                    jarak_km: parseFloat(document.getElementById('fd_jarak').value),
+                    
+                    waktu_daftar: serverTimestamp() // Catat waktu Server Firebase
+                };
+
+                // Gunakan fungsi "push" untuk Realtime Database
+                const pendaftarRef = ref(db, 'pendaftar');
+                await push(pendaftarRef, dataPendaftar);
+
+                document.getElementById('form-pendaftaran').reset();
+                showModal('success', 'Pendaftaran Berhasil!', 'Data telah tersimpan. Silakan cek Peringkat Sementara.');
+
+            } catch (error) {
+                console.error("Error simpan data: ", error);
+                showModal('error', 'Gagal Mengirim', 'Terjadi kesalahan jaringan atau database tidak dalam mode uji (Test Mode).');
+            } finally {
+                btnSubmit.innerHTML = originalBtnText;
+                btnSubmit.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
