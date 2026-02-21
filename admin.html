@@ -6,6 +6,8 @@
     <title>Admin Panel - PPDB SMPN 1 Bandar Seikijang</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Tambahkan library SheetJS untuk fitur Export Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f4f6f9; }
@@ -64,19 +66,19 @@
             <div class="flex-grow overflow-y-auto py-4">
                 <ul class="space-y-1">
                     <li>
-                        <a href="#" class="flex items-center px-6 py-3 bg-blue-800 text-white border-l-4 border-blue-500">
+                        <a href="#" class="flex items-center px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800 transition">
                             <i class="fas fa-tachometer-alt w-6"></i> Dashboard
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800 transition">
+                        <a href="#" class="flex items-center px-6 py-3 bg-blue-800 text-white border-l-4 border-blue-500">
                             <i class="fas fa-users w-6"></i> Data Pendaftar
                         </a>
                     </li>
-                    <!-- Menu placeholder untuk dikembangkan nanti -->
+                    <!-- Menu Export Excel -->
                     <li>
-                        <a href="#" class="flex items-center px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800 transition">
-                            <i class="fas fa-file-export w-6"></i> Export Excel
+                        <a href="#" id="btn-export-excel" class="flex items-center px-6 py-3 text-green-400 hover:text-green-300 hover:bg-gray-800 transition">
+                            <i class="fas fa-file-excel w-6"></i> Export Excel
                         </a>
                     </li>
                 </ul>
@@ -199,7 +201,72 @@
                 <!-- Konten di-generate via JS -->
             </div>
             <div class="p-4 border-t bg-gray-50 rounded-b-xl flex justify-end">
-                <button onclick="closeDetail()" class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Tutup</button>
+                <button onclick="closeDetail()" class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL EDIT SISWA ================= -->
+    <div id="edit-modal" class="fixed inset-0 z-[110] bg-black bg-opacity-50 hidden flex-items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl mx-auto mt-5 max-h-[95vh] flex flex-col">
+            <div class="p-4 border-b flex justify-between items-center bg-yellow-50 rounded-t-xl">
+                <h3 class="text-lg font-bold text-yellow-800"><i class="fas fa-edit text-yellow-600 mr-2"></i> Edit Data Pendaftar</h3>
+                <button onclick="closeEdit()" class="text-gray-500 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <form id="form-edit">
+                    <input type="hidden" id="edit_firebase_id">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">NISN</label>
+                            <input type="number" id="edit_nisn" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                            <input type="text" id="edit_nama" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">No. HP Siswa/Ortu</label>
+                            <input type="tel" id="edit_hp_siswa" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Asal Sekolah</label>
+                            <input type="text" id="edit_asal_sekolah" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Jalur Pendaftaran</label>
+                            <select id="edit_jalur" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                                <option value="Zonasi">Zonasi</option>
+                                <option value="Prestasi">Prestasi</option>
+                                <option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option>
+                                <option value="PindahTugas">Perpindahan Tugas Orang Tua</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke Sekolah (Km)</label>
+                            <input type="number" step="0.1" id="edit_jarak" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Rata-Rata Nilai Ijazah</label>
+                            <input type="number" step="0.01" id="edit_nilai" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nilai TKA</label>
+                            <input type="number" step="0.01" id="edit_nilai_tka" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                    </div>
+                    
+                    <!-- Alert Success -->
+                    <div id="edit-alert" class="hidden text-sm p-3 rounded-lg mb-4 text-center"></div>
+
+                    <div class="flex justify-end gap-3 border-t pt-4 mt-2">
+                        <button type="button" onclick="closeEdit()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">Batal</button>
+                        <button type="submit" id="btn-save-edit" class="px-5 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-bold rounded-lg transition flex items-center justify-center">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -208,7 +275,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+        // Tambahkan "update" pada import database
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
         // ==============================================================================
         // KONFIGURASI FIREBASE REALTIME DATABASE 
@@ -227,27 +295,22 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        let allData = []; // Menyimpan semua data untuk fitur pencarian
+        let allData = []; // Menyimpan semua data untuk fitur pencarian dan export
 
         // ==============================================================================
         // 1. SISTEM AUTENTIKASI (LOGIN & LOGOUT)
         // ==============================================================================
-        
-        // Cek status login saat halaman dimuat
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is signed in
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
                 loadDataAdmin(); // Tarik data jika sudah login
             } else {
-                // No user is signed in
                 document.getElementById('login-screen').classList.remove('hidden');
                 document.getElementById('dashboard-screen').classList.add('hidden');
             }
         });
 
-        // Proses Login
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -261,7 +324,6 @@
 
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Berhasil login (ditangani oleh onAuthStateChanged)
                     btn.innerHTML = 'Masuk';
                     btn.disabled = false;
                     document.getElementById('login-form').reset();
@@ -270,30 +332,19 @@
                     btn.innerHTML = 'Masuk';
                     btn.disabled = false;
                     errorBox.classList.remove('hidden');
-                    console.error("Firebase Login Error:", error);
                     
                     if(error.code === 'auth/invalid-credential') {
                         errorBox.innerText = 'Email atau Password salah!';
                     } else if (error.code === 'auth/invalid-email') {
                         errorBox.innerText = 'Format email tidak valid!';
-                    } else if (error.code === 'auth/user-not-found') {
-                        errorBox.innerText = 'Akun admin tidak ditemukan.';
-                    } else if (error.code === 'auth/network-request-failed') {
-                        errorBox.innerText = 'Koneksi terputus. Pastikan Anda tidak membuka file HTML langsung (file://). Gunakan localhost atau upload ke GitHub Pages.';
                     } else {
-                        // Tampilkan error code aslinya agar mudah di debug
-                        errorBox.innerText = `Error: ${error.message} (${error.code})`;
+                        errorBox.innerText = `Error: ${error.message}`;
                     }
                 });
         });
 
-        // Proses Logout
         document.getElementById('btn-logout').addEventListener('click', () => {
-            signOut(auth).then(() => {
-                // Sign-out successful.
-            }).catch((error) => {
-                console.error("Logout Error", error);
-            });
+            signOut(auth);
         });
 
         // ==============================================================================
@@ -310,10 +361,9 @@
                 if (data) {
                     for (let id in data) {
                         const p = data[id];
-                        p.firebase_id = id; // simpan ID Firebase untuk detail
+                        p.firebase_id = id; // simpan ID Firebase untuk kebutuhan EDIT
                         allData.push(p);
 
-                        // Hitung statistik
                         if(p.jalur === 'Prestasi') statPrestasi++;
                         if(p.jalur === 'Zonasi') statZonasi++;
                         if(p.jalur.includes('Afirmasi')) statAfirmasi++;
@@ -323,7 +373,6 @@
                 // Urutkan data terbaru di atas
                 allData.sort((a, b) => b.waktu_daftar - a.waktu_daftar);
 
-                // Update UI Statistik
                 document.getElementById('stat-total').innerText = allData.length;
                 document.getElementById('stat-prestasi').innerText = statPrestasi;
                 document.getElementById('stat-zonasi').innerText = statZonasi;
@@ -343,7 +392,6 @@
             }
 
             dataArray.forEach((p, index) => {
-                // Format Tanggal Daftar
                 let tglStr = "-";
                 if(p.waktu_daftar) {
                     const d = new Date(p.waktu_daftar);
@@ -363,25 +411,36 @@
                     <td class="p-3 text-gray-700">${p.asal_sekolah}</td>
                     <td class="p-3"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur}</span></td>
                     <td class="p-3 text-right font-bold text-gray-600">${p.jalur === 'Zonasi' ? p.jarak_km + ' Km' : displayNilai}</td>
-                    <td class="p-3 text-center">
+                    <td class="p-3 text-center space-x-1">
                         <button class="btn-detail bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded text-xs font-bold transition" data-index="${index}">
-                            <i class="fas fa-eye"></i> Detail
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-edit bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-3 py-1 rounded text-xs font-bold transition" data-index="${index}">
+                            <i class="fas fa-edit"></i>
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            // Pasang event listener untuk tombol detail
+            // Listener tombol Detail
             document.querySelectorAll('.btn-detail').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const idx = e.currentTarget.getAttribute('data-index');
                     showDetail(dataArray[idx]);
                 });
             });
+
+            // Listener tombol Edit
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.currentTarget.getAttribute('data-index');
+                    openEditModal(dataArray[idx]);
+                });
+            });
         }
 
-        // Fitur Pencarian di Admin
+        // Pencarian di Admin
         document.getElementById('admin-search').addEventListener('input', (e) => {
             const q = e.target.value.toLowerCase();
             const filtered = allData.filter(p => 
@@ -394,17 +453,61 @@
         });
 
         // ==============================================================================
-        // 3. TAMPILKAN MODAL DETAIL LENGKAP
+        // 3. FITUR EXPORT EXCEL
+        // ==============================================================================
+        document.getElementById('btn-export-excel').addEventListener('click', (e) => {
+            e.preventDefault();
+            if(allData.length === 0) {
+                alert("Belum ada data untuk diexport!");
+                return;
+            }
+
+            // Memformat JSON agar rapi di Excel
+            const excelData = allData.map((p, index) => {
+                let tglDaftar = p.waktu_daftar ? new Date(p.waktu_daftar).toLocaleString('id-ID') : "-";
+                
+                return {
+                    "No": index + 1,
+                    "Waktu Daftar": tglDaftar,
+                    "NISN": p.nisn,
+                    "Nama Siswa": p.nama,
+                    "Jenis Kelamin": p.jenis_kelamin,
+                    "Agama": p.agama,
+                    "Tempat Lahir": p.tempat_lahir,
+                    "Tanggal Lahir": p.tanggal_lahir,
+                    "No HP": p.hp_siswa,
+                    "Alamat": p.alamat,
+                    "Asal Sekolah": p.asal_sekolah,
+                    "Jalur Pendaftaran": p.jalur,
+                    "Nilai Rata-rata": p.nilai,
+                    "Nilai TKA": p.nilai_tka || "-",
+                    "Jarak Zonasi (Km)": p.jarak_km,
+                    "KIP/PIP": p.dok_kip === 'Ada' ? p.no_kip : "Tidak",
+                    "Nama Ayah": p.ayah_nama,
+                    "Pekerjaan Ayah": p.ayah_pekerjaan,
+                    "Nama Ibu": p.ibu_nama,
+                    "Pekerjaan Ibu": p.ibu_pekerjaan
+                };
+            });
+
+            // Menggunakan library SheetJS
+            const worksheet = XLSX.utils.json_to_sheet(excelData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Pendaftar");
+            
+            // Trigger Download
+            XLSX.writeFile(workbook, "Data_PPDB_SMPN1_Bandar_Seikijang.xlsx");
+        });
+
+        // ==============================================================================
+        // 4. MODAL DETAIL LENGKAP
         // ==============================================================================
         window.showDetail = function(p) {
             const content = document.getElementById('detail-content');
-            
-            // Format desimal
             const formatNum = (val) => val ? new Intl.NumberFormat('id-ID').format(val) : '-';
 
             let html = `
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Biodata -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <h4 class="font-bold text-gray-800 border-b pb-2 mb-3"><i class="fas fa-user text-gray-500 mr-2"></i> Biodata Siswa</h4>
                         <table class="w-full text-sm">
@@ -418,7 +521,6 @@
                         </table>
                     </div>
 
-                    <!-- Akademik -->
                     <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
                         <h4 class="font-bold text-blue-800 border-b border-blue-200 pb-2 mb-3"><i class="fas fa-school text-blue-500 mr-2"></i> Sekolah & Nilai</h4>
                         <table class="w-full text-sm">
@@ -430,7 +532,6 @@
                         </table>
                     </div>
 
-                    <!-- Orang Tua -->
                     <div class="md:col-span-2 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                         <h4 class="font-bold text-yellow-800 border-b border-yellow-200 pb-2 mb-3"><i class="fas fa-users text-yellow-500 mr-2"></i> Data Orang Tua</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -448,32 +549,88 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Dokumen -->
-                    <div class="md:col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h4 class="font-bold text-gray-800 border-b pb-2 mb-3"><i class="fas fa-folder text-gray-500 mr-2"></i> Status Kelengkapan Dokumen</h4>
-                        <div class="flex flex-wrap gap-2 text-xs">
-                            <span class="px-2 py-1 rounded border ${p.dok_kip === 'Ada' ? 'bg-green-100 border-green-300 text-green-800' : 'bg-red-50 border-red-200 text-red-600'}">KIP: ${p.dok_kip === 'Ada' ? p.no_kip : 'Tidak'}</span>
-                            <span class="px-2 py-1 rounded border ${p.dok_ijazah_tk === 'Ada' ? 'bg-green-100 border-green-300 text-green-800' : 'bg-red-50 border-red-200 text-red-600'}">Ijazah TK: ${p.dok_ijazah_tk}</span>
-                            <span class="px-2 py-1 rounded border ${p.dok_ijazah_mda === 'Ada' ? 'bg-green-100 border-green-300 text-green-800' : 'bg-red-50 border-red-200 text-red-600'}">Ijazah MDA: ${p.dok_ijazah_mda}</span>
-                            <span class="px-2 py-1 rounded border ${p.dok_akte === 'Ada' ? 'bg-green-100 border-green-300 text-green-800' : 'bg-red-50 border-red-200 text-red-600'}">Akte Kelahiran: ${p.dok_akte}</span>
-                            <span class="px-2 py-1 rounded border ${p.dok_kk === 'Ada' ? 'bg-green-100 border-green-300 text-green-800' : 'bg-red-50 border-red-200 text-red-600'}">Kartu Keluarga: ${p.dok_kk}</span>
-                        </div>
-                    </div>
                 </div>
             `;
             content.innerHTML = html;
             
-            const modal = document.getElementById('detail-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            document.getElementById('detail-modal').classList.remove('hidden');
+            document.getElementById('detail-modal').classList.add('flex');
         };
 
         window.closeDetail = function() {
-            const modal = document.getElementById('detail-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            document.getElementById('detail-modal').classList.add('hidden');
+            document.getElementById('detail-modal').classList.remove('flex');
         };
+
+        // ==============================================================================
+        // 5. FITUR EDIT DATA OLEH ADMIN
+        // ==============================================================================
+        window.openEditModal = function(p) {
+            // Isi form dengan data lama
+            document.getElementById('edit_firebase_id').value = p.firebase_id;
+            document.getElementById('edit_nisn').value = p.nisn;
+            document.getElementById('edit_nama').value = p.nama;
+            document.getElementById('edit_hp_siswa').value = p.hp_siswa;
+            document.getElementById('edit_asal_sekolah').value = p.asal_sekolah;
+            document.getElementById('edit_jalur').value = p.jalur;
+            document.getElementById('edit_jarak').value = p.jarak_km;
+            document.getElementById('edit_nilai').value = p.nilai;
+            document.getElementById('edit_nilai_tka').value = p.nilai_tka || '';
+            
+            document.getElementById('edit-alert').classList.add('hidden');
+            
+            document.getElementById('edit-modal').classList.remove('hidden');
+            document.getElementById('edit-modal').classList.add('flex');
+        };
+
+        window.closeEdit = function() {
+            document.getElementById('edit-modal').classList.add('hidden');
+            document.getElementById('edit-modal').classList.remove('flex');
+        };
+
+        // Simpan Perubahan Edit ke Firebase
+        document.getElementById('form-edit').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btnSave = document.getElementById('btn-save-edit');
+            const alertBox = document.getElementById('edit-alert');
+            const id = document.getElementById('edit_firebase_id').value;
+            
+            btnSave.disabled = true;
+            btnSave.innerHTML = '<div class="loader" style="width:16px;height:16px;border-width:2px;border-top-color:white;"></div>';
+            
+            // Ambil data dari form edit
+            const updatedData = {
+                nama: document.getElementById('edit_nama').value,
+                hp_siswa: document.getElementById('edit_hp_siswa').value,
+                asal_sekolah: document.getElementById('edit_asal_sekolah').value,
+                jalur: document.getElementById('edit_jalur').value,
+                jarak_km: parseFloat(document.getElementById('edit_jarak').value) || 0,
+                nilai: parseFloat(document.getElementById('edit_nilai').value) || 0,
+                nilai_tka: document.getElementById('edit_nilai_tka').value ? parseFloat(document.getElementById('edit_nilai_tka').value) : null
+            };
+
+            try {
+                // Update ke Realtime Database spesifik ke ID siswa tersebut
+                const dbRef = ref(db, 'pendaftar/' + id);
+                await update(dbRef, updatedData);
+                
+                alertBox.className = "bg-green-100 text-green-700 text-sm p-3 rounded-lg mb-4 text-center";
+                alertBox.innerText = "Data berhasil diperbarui!";
+                alertBox.classList.remove('hidden');
+                
+                setTimeout(() => { closeEdit(); }, 1500); // Tutup otomatis setelah 1.5 detik
+            } catch (error) {
+                console.error("Error Update:", error);
+                alertBox.className = "bg-red-100 text-red-700 text-sm p-3 rounded-lg mb-4 text-center";
+                alertBox.innerText = "Gagal memperbarui data. Cek koneksi Anda.";
+                alertBox.classList.remove('hidden');
+            } finally {
+                btnSave.disabled = false;
+                btnSave.innerHTML = 'Simpan Perubahan';
+            }
+        });
+
     </script>
 </body>
 </html>
