@@ -95,7 +95,7 @@
         <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
             <div>
                 <h2 class="text-2xl font-bold text-gray-800">Menu Cetak Berkas Siswa</h2>
-                <p class="text-sm text-gray-500">Pilih siswa dan klik tombol cetak untuk memprint formulir A4 per siswa.</p>
+                <p class="text-sm text-gray-500">Pilih siswa dan klik tombol cetak untuk memprint formulir A4 per siswa. <br><b>Urutan berdasarkan pendaftaran terawal hingga terbaru.</b></p>
             </div>
             <a href="admin.html" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition flex items-center">
                 <i class="fas fa-arrow-left mr-2"></i> Kembali ke Admin
@@ -116,11 +116,12 @@
                         <th class="p-3">Nama Pendaftar</th>
                         <th class="p-3">Asal Sekolah</th>
                         <th class="p-3">Jalur</th>
+                        <th class="p-3">Waktu Daftar</th>
                         <th class="p-3 text-right">Aksi Cetak</th>
                     </tr>
                 </thead>
                 <tbody id="list-tabel-body" class="text-sm">
-                    <tr><td colspan="6" class="text-center py-10"><div class="loader mx-auto"></div><p class="mt-2 text-gray-500">Memuat data...</p></td></tr>
+                    <tr><td colspan="7" class="text-center py-10"><div class="loader mx-auto"></div><p class="mt-2 text-gray-500">Memuat data...</p></td></tr>
                 </tbody>
             </table>
         </div>
@@ -180,8 +181,8 @@
                         allData.push({ id: id, ...data[id] });
                     }
                 }
-                // Urutkan data berdasarkan waktu terbaru
-                allData.sort((a, b) => (b.waktu_daftar || 0) - (a.waktu_daftar || 0));
+                // Urutkan data dari yang mendaftar PERTAMA KALI (terlama di atas, terbaru di bawah)
+                allData.sort((a, b) => (a.waktu_daftar || 0) - (b.waktu_daftar || 0));
                 renderListTable(allData);
             });
         }
@@ -191,12 +192,18 @@
             tbody.innerHTML = '';
 
             if(dataArray.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 italic text-gray-500">Belum ada data pendaftar.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 italic text-gray-500">Belum ada data pendaftar.</td></tr>`;
                 return;
             }
 
             dataArray.forEach((p, index) => {
                 let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : 'purple');
+                
+                let tglStr = "-";
+                if(p.waktu_daftar) {
+                    const d = new Date(p.waktu_daftar);
+                    tglStr = `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)}/${d.getFullYear()} ${('0'+d.getHours()).slice(-2)}:${('0'+d.getMinutes()).slice(-2)}`;
+                }
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50 border-b border-gray-100 transition">
@@ -205,6 +212,7 @@
                         <td class="p-3 font-bold text-gray-800">${p.nama || '-'}</td>
                         <td class="p-3 text-gray-600">${p.asal_sekolah || '-'}</td>
                         <td class="p-3"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur || '-'}</span></td>
+                        <td class="p-3 text-xs text-gray-600">${tglStr}</td>
                         <td class="p-3 text-right">
                             <button class="btn-print bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg shadow-sm text-xs font-bold transition flex items-center justify-end ml-auto" data-index="${index}">
                                 <i class="fas fa-print mr-1.5"></i> Cetak Form
@@ -283,9 +291,9 @@
                 <h3 class="font-bold uppercase border border-black px-2 py-1 mb-1">C. Data Orang Tua / Wali</h3>
                 <table>
                     <tr><th>Nama Ayah Kandung</th><td>${p.ayah_nama || '-'} <span class="text-[10px]">(${p.ayah_status || '-'})</span></td></tr>
-                    <tr><th>Pekerjaan Ayah</th><td>${p.ayah_pekerjaan || '-'}</td></tr>
+                    <tr><th>Pekerjaan Ayah</th><td>${p.ayah_pekerjaan || '-'} <span class="text-[10px] ml-1">/ Penghasilan: Rp. ${p.ayah_gaji || '0'}</span></td></tr>
                     <tr><th>Nama Ibu Kandung</th><td>${p.ibu_nama || '-'} <span class="text-[10px]">(${p.ibu_status || '-'})</span></td></tr>
-                    <tr><th>Pekerjaan Ibu</th><td>${p.ibu_pekerjaan || '-'}</td></tr>
+                    <tr><th>Pekerjaan Ibu</th><td>${p.ibu_pekerjaan || '-'} <span class="text-[10px] ml-1">/ Penghasilan: Rp. ${p.ibu_gaji || '0'}</span></td></tr>
                     <tr><th>Data Wali (Jika ada)</th><td>Nama: ${p.wali_nama || '-'} | Pekerjaan: ${p.wali_pekerjaan || '-'} | HP: ${p.wali_hp || '-'}</td></tr>
                 </table>
 
@@ -306,8 +314,11 @@
                     </tr>
                 </table>
 
-                <div class="mt-8 text-xs">
-                    <p class="mb-8">Demikian formulir ini diisi dengan data yang sebenar-benarnya untuk digunakan sebagaimana mestinya.</p>
+                <div class="mt-6 text-xs">
+                    <p class="mb-5 text-justify">
+                        Demikian formulir ini diisi dengan data yang sebenar-benarnya untuk digunakan sebagaimana mestinya. 
+                        <br><b>Pernyataan:</b> Apabila di kemudian hari terbukti bahwa data atau dokumen yang dilampirkan adalah palsu/tidak valid, maka pendaftaran siswa baru ini berhak <b>dibatalkan secara sepihak</b> oleh pihak sekolah.
+                    </p>
                     <table style="border:none;">
                         <tr>
                             <td style="border:none; text-align:center; width:50%;">
