@@ -276,7 +276,10 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Jalur Pendaftaran *</label>
                                 <select id="fd_jalur" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                                     <option value="" disabled selected>Pilih Jalur</option>
-                                    <option value="Zonasi">Zonasi</option><option value="Prestasi">Prestasi</option><option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option><option value="PindahTugas">Perpindahan Tugas Orang Tua</option>
+                                    <option value="Domisili">Domisili</option>
+                                    <option value="Prestasi">Prestasi</option>
+                                    <option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option>
+                                    <option value="Mutasi">Mutasi</option>
                                 </select>
                             </div>
                             <div>
@@ -298,7 +301,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row justify-end gap-4 mt-8">
-                        <button type="reset" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition w-full sm:w-auto font-medium">Reset</button>
+                        <button type="button" onclick="handleResetBtn()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition w-full sm:w-auto font-medium">Reset</button>
                         <button type="submit" id="btn-submit" class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-800 transition shadow-md w-full sm:w-auto flex justify-center items-center">
                             Kirim Pendaftaran
                         </button>
@@ -320,10 +323,10 @@
                         <!-- Dropdown Filter Jalur -->
                         <select id="filter-jalur" class="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-secondary">
                             <option value="Semua Jalur">Semua Jalur</option>
-                            <option value="Zonasi" selected>Zonasi</option>
+                            <option value="Domisili" selected>Domisili</option>
                             <option value="Prestasi">Prestasi</option>
                             <option value="Afirmasi">Afirmasi</option>
-                            <option value="PindahTugas">Perpindahan Tugas</option>
+                            <option value="Mutasi">Mutasi</option>
                         </select>
                         <div class="relative w-full sm:w-64">
                             <input type="text" id="search-ranking" placeholder="Cari Nama / NISN..." class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm pl-10 focus:outline-none focus:ring-2 focus:ring-secondary">
@@ -385,6 +388,21 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi -->
+    <div id="confirm-modal" class="fixed inset-0 z-[110] bg-black bg-opacity-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-auto text-center transform scale-95 transition-transform duration-300" id="confirm-modal-content">
+            <div id="confirm-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-blue-100 text-blue-600">
+                <i class="fas fa-question text-3xl"></i>
+            </div>
+            <h3 id="confirm-title" class="text-xl font-bold text-gray-800 mb-2">Konfirmasi</h3>
+            <p id="confirm-desc" class="text-sm text-gray-600 mb-6">Apakah Anda yakin?</p>
+            <div class="flex justify-center space-x-3">
+                <button onclick="closeConfirm()" class="px-5 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium">Batal</button>
+                <button id="btn-confirm-action" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
     <!-- UI Scripts -->
     <script>
         function navigate(viewName) {
@@ -430,6 +448,57 @@
             document.getElementById('alert-modal').classList.remove('flex');
             if(document.getElementById('modal-title').innerText.includes('Berhasil')) navigate('ranking');
         }
+
+        // Script Modal Konfirmasi
+        let confirmAction = null;
+        function showConfirm(title, desc, actionCallback, iconClass = "fas fa-question text-3xl", iconBg = "bg-blue-100 text-blue-600") {
+            document.getElementById('confirm-title').innerText = title;
+            document.getElementById('confirm-desc').innerText = desc;
+            
+            const iconContainer = document.getElementById('confirm-icon');
+            iconContainer.className = `w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${iconBg}`;
+            iconContainer.innerHTML = `<i class="${iconClass}"></i>`;
+
+            confirmAction = actionCallback;
+
+            const modal = document.getElementById('confirm-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Menambahkan efek scale
+            setTimeout(() => {
+                document.getElementById('confirm-modal-content').classList.remove('scale-95');
+                document.getElementById('confirm-modal-content').classList.add('scale-100');
+            }, 10);
+        }
+
+        window.closeConfirm = function() {
+            document.getElementById('confirm-modal-content').classList.add('scale-95');
+            document.getElementById('confirm-modal-content').classList.remove('scale-100');
+            setTimeout(() => {
+                const modal = document.getElementById('confirm-modal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                confirmAction = null;
+            }, 150);
+        }
+
+        document.getElementById('btn-confirm-action').addEventListener('click', () => {
+            if(confirmAction) confirmAction();
+            closeConfirm();
+        });
+
+        // Script Button Reset
+        window.handleResetBtn = function() {
+            showConfirm(
+                'Konfirmasi Reset Form', 
+                'Apakah Anda yakin ingin mengosongkan seluruh isian formulir?', 
+                () => { 
+                    document.getElementById('form-pendaftaran').reset(); 
+                }, 
+                'fas fa-undo text-3xl', 
+                'bg-yellow-100 text-yellow-600'
+            );
+        };
 
         // Script untuk Memformat Input Ribuan Otomatis (Hanya untuk kelas format-ribuan / Nominal Uang)
         document.addEventListener('input', function (e) {
@@ -572,7 +641,7 @@
         let currentPage = 1;
         const itemsPerPage = 20;
         let searchQuery = '';
-        let filterJalur = 'Zonasi'; // Default filter ke Zonasi
+        let filterJalur = 'Domisili'; // Default filter ke Domisili (Zonasi)
 
         function renderTable() {
             const tbody = document.getElementById('tabel-body');
@@ -587,10 +656,10 @@
                 // Filter berdasarkan Dropdown Jalur
                 let matchJalur = false;
                 if (filterJalur === 'Semua Jalur') matchJalur = true;
-                else if (filterJalur === 'Zonasi' && p.jalur === 'Zonasi') matchJalur = true;
+                else if (filterJalur === 'Domisili' && p.jalur === 'Domisili') matchJalur = true;
                 else if (filterJalur === 'Prestasi' && p.jalur === 'Prestasi') matchJalur = true;
                 else if (filterJalur === 'Afirmasi' && p.jalur && p.jalur.includes('Afirmasi')) matchJalur = true;
-                else if (filterJalur === 'PindahTugas' && p.jalur && p.jalur.includes('Pindah')) matchJalur = true;
+                else if (filterJalur === 'Mutasi' && p.jalur === 'Mutasi') matchJalur = true;
 
                 // Filter berdasarkan Input Pencarian
                 let matchSearch = true;
@@ -603,9 +672,9 @@
                 return matchJalur && matchSearch;
             });
 
-            // 2. Proses Sorting (Zonasi = Jarak terdekat. Selain Zonasi = Nilai tertinggi)
+            // 2. Proses Sorting (Domisili = Jarak terdekat. Selain Domisili = Nilai tertinggi)
             filtered.sort((a, b) => {
-                if (filterJalur === 'Zonasi' || (filterJalur === 'Semua Jalur' && a.jalur === 'Zonasi' && b.jalur === 'Zonasi')) {
+                if (filterJalur === 'Domisili' || (filterJalur === 'Semua Jalur' && a.jalur === 'Domisili' && b.jalur === 'Domisili')) {
                     return (a.jarak_km || 0) - (b.jarak_km || 0); // Jarak terkecil di atas
                 }
                 return (b.nilai || 0) - (a.nilai || 0); // Nilai terbesar di atas
@@ -639,7 +708,7 @@
                         tglStr = `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)} ${('0'+d.getHours()).slice(-2)}:${('0'+d.getMinutes()).slice(-2)}`;
                     }
 
-                    let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : (p.jalur.includes('Pindah') ? 'red' : 'purple'));
+                    let colorJalur = p.jalur === 'Domisili' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : (p.jalur === 'Mutasi' ? 'red' : 'purple'));
                     // Format output nilai kembali ke bentuk desimal berkoma ala Indonesia
                     let displayNilai = new Intl.NumberFormat('id-ID').format(p.nilai || 0);
 
@@ -699,9 +768,21 @@
         // ==========================================
         // PROSES SUBMIT PENDAFTARAN
         // ==========================================
-        document.getElementById('form-pendaftaran').addEventListener('submit', async (e) => {
+        document.getElementById('form-pendaftaran').addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            showConfirm(
+                'Kirim Pendaftaran?', 
+                'Pastikan seluruh data yang diisi sudah benar dan sesuai dengan dokumen asli.', 
+                async () => {
+                    await executeSubmit();
+                }, 
+                'fas fa-paper-plane text-3xl', 
+                'bg-blue-100 text-blue-600'
+            );
+        });
 
+        async function executeSubmit() {
             const btnSubmit = document.getElementById('btn-submit');
             const originalBtnText = btnSubmit.innerHTML;
             btnSubmit.innerHTML = '<div class="loader"></div> Mengirim...';
@@ -769,7 +850,7 @@
                 btnSubmit.innerHTML = originalBtnText;
                 btnSubmit.disabled = false;
             }
-        });
+        }
     </script>
 </body>
 </html>
