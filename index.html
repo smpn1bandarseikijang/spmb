@@ -124,7 +124,7 @@
         </div>
 
         <!-- ================= REGISTER VIEW ================= -->
-        <div id="view-register" class="fade-in hidden max-w-4xl mx-auto px-4 py-10">
+        <div id="view-register" class="fade-in hidden max-w-5xl mx-auto px-4 py-10">
             <div class="flex items-center mb-6">
                 <button onclick="navigate('home')" class="text-gray-500 hover:text-primary mr-4"><i class="fas fa-arrow-left text-xl"></i></button>
                 <h2 class="text-3xl font-bold text-primary border-b-4 border-accent pb-2 inline-block">Form Pendaftaran</h2>
@@ -134,70 +134,292 @@
                 <p class="text-gray-600 mb-8 border-l-4 border-secondary pl-4 bg-blue-50 py-2">Silakan isi formulir di bawah ini dengan data yang sebenar-benarnya sesuai dengan dokumen resmi yang Anda miliki.</p>
                 
                 <form id="form-pendaftaran" onsubmit="submitForm(event)">
-                    <!-- Data Pribadi -->
-                    <h3 class="text-lg font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-user mr-2"></i> Data Peserta Didik</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">NISN *</label>
-                            <input type="number" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Masukkan 10 digit NISN">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label>
-                            <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Sesuai Akta Kelahiran">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir *</label>
-                            <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Tempat Lahir">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir *</label>
-                            <input type="date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap *</label>
-                            <textarea required rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Alamat tempat tinggal saat ini"></textarea>
+                    
+                    <!-- 1. Data Peserta Didik -->
+                    <div class="mb-10">
+                        <h3 class="text-xl font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-user mr-2"></i> Data Peserta Didik</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">NISN (10 Digit) *</label>
+                                <input type="number" required minlength="10" maxlength="10" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Masukkan 10 digit NISN">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label>
+                                <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Sesuai Akta Kelahiran">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin *</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih Jenis Kelamin</option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Agama *</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih Agama</option>
+                                    <option value="Islam">Islam</option>
+                                    <option value="Kristen">Kristen</option>
+                                    <option value="Katolik">Katolik</option>
+                                    <option value="Hindu">Hindu</option>
+                                    <option value="Buddha">Buddha</option>
+                                    <option value="Konghucu">Konghucu</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir (Sesuai Akte) *</label>
+                                <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Tempat Lahir">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir *</label>
+                                <input type="date" value="2013-01-01" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Tinggal *</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih Tempat Tinggal</option>
+                                    <option value="Bersama Orang Tua">Bersama Orang Tua</option>
+                                    <option value="Bersama Wali">Bersama Wali</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Transportasi Ke Sekolah *</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih Transportasi</option>
+                                    <option value="Bus">Bus</option>
+                                    <option value="Diantar Orang Tua">Diantar Orang Tua</option>
+                                    <option value="Sepeda Motor">Sepeda Motor</option>
+                                    <option value="Jalan Kaki">Jalan Kaki</option>
+                                    <option value="Angkutan Umum">Angkutan Umum</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">No. HP Orang Tua / Siswa *</label>
+                                <input type="tel" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Contoh: 08123456789">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Rumah *</label>
+                                <textarea required rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Alamat lengkap tempat tinggal saat ini"></textarea>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Data Sekolah Asal -->
-                    <h3 class="text-lg font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-school mr-2"></i> Data Sekolah Asal & Nilai</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Asal Sekolah Dasar (SD/MI) *</label>
-                            <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nama SD / MI asal">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Jalur Pendaftaran *</label>
-                            <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
-                                <option value="" disabled selected>Pilih Jalur</option>
-                                <option value="Zonasi">Zonasi</option>
-                                <option value="Prestasi">Prestasi</option>
-                                <option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option>
-                                <option value="PindahTugas">Perpindahan Tugas Orang Tua</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nilai Rata-rata Rapor (Kelas 4-6) *</label>
-                            <input type="number" step="0.01" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Contoh: 85.50">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke Sekolah (Meter) *</label>
-                            <input type="number" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Jarak dalam meter (jika Zonasi)">
+                    <!-- 2. Kelengkapan Dokumen -->
+                    <div class="mb-10 bg-gray-50 p-6 rounded-xl border border-gray-200">
+                        <h3 class="text-lg font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-folder-open mr-2"></i> Kelengkapan Dokumen</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Memiliki KIP / PIP</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih</option>
+                                    <option value="Ada">Ada</option>
+                                    <option value="Tidak">Tidak</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Memiliki Ijazah TK</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih</option>
+                                    <option value="Ada">Ada</option>
+                                    <option value="Tidak">Tidak</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Memiliki Ijazah MDA</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih</option>
+                                    <option value="Ada">Ada</option>
+                                    <option value="Tidak">Tidak</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Memiliki Akte Kelahiran</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih</option>
+                                    <option value="Ada">Ada</option>
+                                    <option value="Tidak">Tidak</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Memiliki Kartu Keluarga</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih</option>
+                                    <option value="Ada">Ada</option>
+                                    <option value="Tidak">Tidak</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex items-start mb-8">
-                        <div class="flex items-center h-5">
-                            <input id="terms" type="checkbox" required class="w-5 h-5 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-secondary">
+                    <!-- 3. Data Orang Tua & Wali -->
+                    <div class="mb-10">
+                        <h3 class="text-xl font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-users mr-2"></i> Data Orang Tua & Wali</h3>
+                        
+                        <!-- Ayah -->
+                        <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-100 mb-6">
+                            <h4 class="font-medium text-blue-800 mb-3">Data Ayah Kandung</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap Ayah</label>
+                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nama Ayah">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Status Ayah</label>
+                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                        <option value="" disabled selected>Pilih Status</option>
+                                        <option value="Masih Hidup">Masih Hidup</option>
+                                        <option value="Sudah Meninggal">Sudah Meninggal</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan Ayah</label>
+                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                        <option value="" disabled selected>Pilih Pekerjaan</option>
+                                        <option value="Petani">Petani</option>
+                                        <option value="Karyawan">Karyawan</option>
+                                        <option value="Buruh">Buruh</option>
+                                        <option value="Wiraswasta">Wiraswasta</option>
+                                        <option value="PNS">PNS</option>
+                                        <option value="PPPK">PPPK</option>
+                                        <option value="Guru ASN">Guru ASN</option>
+                                        <option value="Guru Non ASN">Guru Non ASN</option>
+                                        <option value="TNI">TNI</option>
+                                        <option value="Polisi">Polisi</option>
+                                        <option value="Lainnya">Lainnya...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">No. HP Ayah</label>
+                                    <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nomor Handphone">
+                                </div>
+                            </div>
                         </div>
-                        <label for="terms" class="ml-2 text-sm text-gray-600">
+
+                        <!-- Ibu -->
+                        <div class="bg-pink-50/50 p-4 rounded-lg border border-pink-100 mb-6">
+                            <h4 class="font-medium text-pink-800 mb-3">Data Ibu Kandung</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap Ibu</label>
+                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nama Ibu">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Status Ibu</label>
+                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                        <option value="" disabled selected>Pilih Status</option>
+                                        <option value="Masih Hidup">Masih Hidup</option>
+                                        <option value="Sudah Meninggal">Sudah Meninggal</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan Ibu</label>
+                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                        <option value="" disabled selected>Pilih Pekerjaan</option>
+                                        <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+                                        <option value="Petani">Petani</option>
+                                        <option value="Karyawan">Karyawan</option>
+                                        <option value="Buruh">Buruh</option>
+                                        <option value="Wiraswasta">Wiraswasta</option>
+                                        <option value="PNS">PNS</option>
+                                        <option value="PPPK">PPPK</option>
+                                        <option value="Guru ASN">Guru ASN</option>
+                                        <option value="Guru Non ASN">Guru Non ASN</option>
+                                        <option value="TNI">TNI</option>
+                                        <option value="Polisi">Polisi</option>
+                                        <option value="Lainnya">Lainnya...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">No. HP Ibu</label>
+                                    <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nomor Handphone">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Wali -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h4 class="font-medium text-gray-700 mb-3">Data Wali <span class="text-xs font-normal text-gray-500">(Isi jika tidak tinggal bersama orang tua)</span></h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap Wali</label>
+                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nama Wali">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan Wali</label>
+                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                        <option value="" selected>Pilih Pekerjaan</option>
+                                        <option value="Petani">Petani</option>
+                                        <option value="Karyawan">Karyawan</option>
+                                        <option value="Buruh">Buruh</option>
+                                        <option value="Wiraswasta">Wiraswasta</option>
+                                        <option value="PNS">PNS</option>
+                                        <option value="PPPK">PPPK</option>
+                                        <option value="Guru ASN">Guru ASN</option>
+                                        <option value="Guru Non ASN">Guru Non ASN</option>
+                                        <option value="TNI">TNI</option>
+                                        <option value="Polisi">Polisi</option>
+                                        <option value="Lainnya">Lainnya...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">No. HP Wali</label>
+                                    <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Nomor Handphone">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Data Sekolah Asal & Nilai -->
+                    <div class="mb-10">
+                        <h3 class="text-xl font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-school mr-2"></i> Data Sekolah Asal & Nilai</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Asal Sekolah *</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih Sekolah Asal</option>
+                                    <option value="SDN 008 Seikijang">SDN 008 Seikijang</option>
+                                    <option value="SDN 001 Seikijang">SDN 001 Seikijang</option>
+                                    <option value="SDN 006 Muda Setia">SDN 006 Muda Setia</option>
+                                    <option value="SDN 003 Lubuk Ogong">SDN 003 Lubuk Ogong</option>
+                                    <option value="SDN 004 Lubuk Ogong">SDN 004 Lubuk Ogong</option>
+                                    <option value="SDN 11 Kerinci Kiri">SDN 11 Kerinci Kiri</option>
+                                    <option value="SD Lainnya">SD Lain...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jalur Pendaftaran *</label>
+                                <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition">
+                                    <option value="" disabled selected>Pilih Jalur</option>
+                                    <option value="Zonasi">Zonasi</option>
+                                    <option value="Prestasi">Prestasi</option>
+                                    <option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option>
+                                    <option value="PindahTugas">Perpindahan Tugas Orang Tua</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Rata - Rata Nilai Ijazah / SKL *</label>
+                                <input type="number" step="0.01" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Contoh: 85.50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke Sekolah (Kilometer) *</label>
+                                <input type="number" step="0.1" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Jarak dalam km (Contoh: 1.5)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start mb-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                        <div class="flex items-center h-5 mt-0.5">
+                            <input id="terms" type="checkbox" required class="w-5 h-5 border border-gray-300 rounded bg-white focus:ring-3 focus:ring-secondary">
+                        </div>
+                        <label for="terms" class="ml-3 text-sm text-gray-700 font-medium leading-relaxed">
                             Saya menyatakan bahwa data yang diisikan adalah benar dan dapat dipertanggungjawabkan. Jika terbukti memalsukan data, saya bersedia menerima sanksi pembatalan pendaftaran.
                         </label>
                     </div>
 
-                    <div class="flex justify-end space-x-4">
-                        <button type="button" onclick="navigate('home')" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">Batal</button>
-                        <button type="submit" class="px-8 py-2 bg-primary text-white font-bold rounded-lg hover:bg-blue-800 transition shadow-md">Kirim Pendaftaran</button>
+                    <div class="flex flex-col sm:flex-row justify-end gap-4 mt-8">
+                        <button type="button" onclick="navigate('home')" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition w-full sm:w-auto font-medium">Batal</button>
+                        <button type="submit" class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-800 transition shadow-md w-full sm:w-auto">Kirim Pendaftaran</button>
                     </div>
                 </form>
             </div>
@@ -247,7 +469,7 @@
                                 <td class="p-4 font-bold text-center"><span class="bg-accent text-white w-6 h-6 rounded-full inline-flex items-center justify-center">1</span></td>
                                 <td class="p-4 font-mono text-gray-600">26270001</td>
                                 <td class="p-4 font-bold text-gray-800">Ahmad Fauzi</td>
-                                <td class="p-4 text-gray-600">SDN 001 Bandar Seikijang</td>
+                                <td class="p-4 text-gray-600">SDN 001 Seikijang</td>
                                 <td class="p-4"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-semibold">Prestasi</span></td>
                                 <td class="p-4 font-bold text-secondary">92.50</td>
                                 <td class="p-4 text-center"><span class="text-green-600 font-bold"><i class="fas fa-check-circle"></i> Aman</span></td>
@@ -257,9 +479,9 @@
                                 <td class="p-4 font-bold text-center"><span class="bg-gray-300 text-gray-700 w-6 h-6 rounded-full inline-flex items-center justify-center">2</span></td>
                                 <td class="p-4 font-mono text-gray-600">26270014</td>
                                 <td class="p-4 font-bold text-gray-800">Budi Santoso</td>
-                                <td class="p-4 text-gray-600">SDN 003 Bandar Seikijang</td>
+                                <td class="p-4 text-gray-600">SDN 003 Lubuk Ogong</td>
                                 <td class="p-4"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">Zonasi</span></td>
-                                <td class="p-4 font-bold text-secondary">450 M</td>
+                                <td class="p-4 font-bold text-secondary">0.45 Km</td>
                                 <td class="p-4 text-center"><span class="text-green-600 font-bold"><i class="fas fa-check-circle"></i> Aman</span></td>
                             </tr>
                             <!-- Dummy Data 3 -->
@@ -267,9 +489,9 @@
                                 <td class="p-4 font-bold text-center"><span class="bg-gray-300 text-gray-700 w-6 h-6 rounded-full inline-flex items-center justify-center">3</span></td>
                                 <td class="p-4 font-mono text-gray-600">26270008</td>
                                 <td class="p-4 font-bold text-gray-800">Citra Kirana</td>
-                                <td class="p-4 text-gray-600">SDN 002 Bandar Seikijang</td>
+                                <td class="p-4 text-gray-600">SDN 008 Seikijang</td>
                                 <td class="p-4"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">Zonasi</span></td>
-                                <td class="p-4 font-bold text-secondary">600 M</td>
+                                <td class="p-4 font-bold text-secondary">0.60 Km</td>
                                 <td class="p-4 text-center"><span class="text-green-600 font-bold"><i class="fas fa-check-circle"></i> Aman</span></td>
                             </tr>
                             <!-- Dummy Data 4 -->
@@ -277,7 +499,7 @@
                                 <td class="p-4 font-bold text-center text-gray-500">4</td>
                                 <td class="p-4 font-mono text-gray-600">26270022</td>
                                 <td class="p-4 font-bold text-gray-800">Dewi Lestari</td>
-                                <td class="p-4 text-gray-600">SD Swasta Kasih</td>
+                                <td class="p-4 text-gray-600">SD Lainnya</td>
                                 <td class="p-4"><span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs font-semibold">Afirmasi</span></td>
                                 <td class="p-4 font-bold text-secondary">KIP / KKS</td>
                                 <td class="p-4 text-center"><span class="text-yellow-600 font-bold"><i class="fas fa-clock"></i> Verifikasi</span></td>
@@ -287,7 +509,7 @@
                                 <td class="p-4 font-bold text-center text-gray-500">5</td>
                                 <td class="p-4 font-mono text-gray-600">26270045</td>
                                 <td class="p-4 font-bold text-gray-800">Eko Pratama</td>
-                                <td class="p-4 text-gray-600">SDN 005 Pelalawan</td>
+                                <td class="p-4 text-gray-600">SDN 11 Kerinci Kiri</td>
                                 <td class="p-4"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-semibold">Prestasi</span></td>
                                 <td class="p-4 font-bold text-secondary">88.25</td>
                                 <td class="p-4 text-center"><span class="text-green-600 font-bold"><i class="fas fa-check-circle"></i> Aman</span></td>
@@ -391,6 +613,9 @@
             
             // Reset form
             document.getElementById('form-pendaftaran').reset();
+            
+            // Reset default date manually if needed
+            document.querySelector('input[type="date"]').value = "2013-01-01";
         }
 
         function closeModal() {
