@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - PPDB SMPN 1 Bandar Seikijang</title>
+    <title>Admin Panel - SPMB SMPN 1 Bandar Seikijang</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Tambahkan library SheetJS untuk fitur Export Excel -->
@@ -28,7 +28,7 @@
         <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
             <div class="text-center mb-8">
                 <i class="fas fa-user-shield text-5xl text-blue-600 mb-4"></i>
-                <h2 class="text-2xl font-bold text-gray-800">Admin PPDB</h2>
+                <h2 class="text-2xl font-bold text-gray-800">Admin SPMB</h2>
                 <p class="text-gray-500 text-sm">Silakan login untuk mengakses data pendaftar.</p>
             </div>
             <form id="login-form">
@@ -61,7 +61,7 @@
         <aside class="w-64 bg-gray-900 text-white flex flex-col hidden md:flex">
             <div class="h-16 flex items-center px-6 border-b border-gray-800">
                 <i class="fas fa-graduation-cap text-yellow-500 text-2xl mr-3"></i>
-                <span class="font-bold text-lg tracking-wider">PPDB ADMIN</span>
+                <span class="font-bold text-lg tracking-wider">SPMB ADMIN</span>
             </div>
             <div class="flex-grow overflow-y-auto py-4">
                 <ul class="space-y-1">
@@ -77,8 +77,14 @@
                     </li>
                     <!-- Menu Export Excel -->
                     <li>
-                        <a href="#" id="btn-export-excel" class="flex items-center px-6 py-3 text-green-400 hover:text-green-300 hover:bg-gray-800 transition">
+                        <a href="#" onclick="confirmExport(event)" class="flex items-center px-6 py-3 text-green-400 hover:text-green-300 hover:bg-gray-800 transition">
                             <i class="fas fa-file-excel w-6"></i> Export Excel
+                        </a>
+                    </li>
+                    <!-- Menu Cetak A4 (New Tab) -->
+                    <li>
+                        <a href="print.html" target="_blank" class="flex items-center px-6 py-3 text-purple-400 hover:text-purple-300 hover:bg-gray-800 transition">
+                            <i class="fas fa-print w-6"></i> Cetak Formulir
                         </a>
                     </li>
                 </ul>
@@ -111,42 +117,52 @@
             <!-- Content Area -->
             <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-100">
                 
-                <!-- Stat Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <!-- Stat Cards (Diperbarui jadi 5 Kolom) -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
                     <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500 flex items-center">
-                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4 hidden sm:block">
                             <i class="fas fa-users text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500 font-medium">Total Pendaftar</p>
+                            <p class="text-sm text-gray-500 font-medium">Total</p>
                             <p class="text-2xl font-bold text-gray-800" id="stat-total">0</p>
                         </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-green-500 flex items-center">
-                        <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+                        <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4 hidden sm:block">
                             <i class="fas fa-trophy text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500 font-medium">Jalur Prestasi</p>
+                            <p class="text-sm text-gray-500 font-medium">Prestasi</p>
                             <p class="text-2xl font-bold text-gray-800" id="stat-prestasi">0</p>
                         </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-indigo-500 flex items-center">
-                        <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4">
+                        <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4 hidden sm:block">
                             <i class="fas fa-map-marked-alt text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500 font-medium">Jalur Zonasi</p>
+                            <p class="text-sm text-gray-500 font-medium">Zonasi</p>
                             <p class="text-2xl font-bold text-gray-800" id="stat-zonasi">0</p>
                         </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-yellow-500 flex items-center">
-                        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
+                        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4 hidden sm:block">
                             <i class="fas fa-hand-holding-heart text-xl"></i>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500 font-medium">Afirmasi</p>
                             <p class="text-2xl font-bold text-gray-800" id="stat-afirmasi">0</p>
+                        </div>
+                    </div>
+                    <!-- Card Baru: Perpindahan -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-red-500 flex items-center">
+                        <div class="p-3 rounded-full bg-red-100 text-red-600 mr-4 hidden sm:block">
+                            <i class="fas fa-truck-moving text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Perpindahan</p>
+                            <p class="text-2xl font-bold text-gray-800" id="stat-pindah">0</p>
                         </div>
                     </div>
                 </div>
@@ -191,7 +207,7 @@
     </div>
 
     <!-- ================= MODAL DETAIL SISWA ================= -->
-    <div id="detail-modal" class="fixed inset-0 z-[100] bg-black bg-opacity-50 hidden flex-items-center justify-center p-4">
+    <div id="detail-modal" class="fixed inset-0 z-[100] bg-black bg-opacity-50 hidden items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-auto mt-10 max-h-[90vh] flex flex-col">
             <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-xl">
                 <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-id-card text-blue-600 mr-2"></i> Detail Lengkap Pendaftar</h3>
@@ -207,7 +223,7 @@
     </div>
 
     <!-- ================= MODAL EDIT SISWA (Semua Field) ================= -->
-    <div id="edit-modal" class="fixed inset-0 z-[110] bg-black bg-opacity-50 hidden flex-items-center justify-center p-4">
+    <div id="edit-modal" class="fixed inset-0 z-[110] bg-black bg-opacity-50 hidden items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-auto mt-5 max-h-[95vh] flex flex-col">
             <div class="p-4 border-b flex justify-between items-center bg-yellow-50 rounded-t-xl">
                 <h3 class="text-lg font-bold text-yellow-800"><i class="fas fa-edit text-yellow-600 mr-2"></i> Edit Semua Data Pendaftar</h3>
@@ -344,6 +360,21 @@
         </div>
     </div>
 
+    <!-- ================= MODAL KONFIRMASI GLOBAL ================= -->
+    <div id="confirm-modal" class="fixed inset-0 z-[120] bg-black bg-opacity-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-auto text-center mt-10">
+            <div id="confirm-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-blue-100 text-blue-600">
+                <i class="fas fa-question text-3xl"></i>
+            </div>
+            <h3 id="confirm-title" class="text-xl font-bold text-gray-800 mb-2">Konfirmasi</h3>
+            <p id="confirm-desc" class="text-sm text-gray-600 mb-6">Apakah Anda yakin?</p>
+            <div class="flex justify-center space-x-3">
+                <button onclick="closeConfirm()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium">Batal</button>
+                <button id="btn-confirm-action" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
     <!-- FIREBASE & LOGIC SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -368,6 +399,39 @@
         const db = getDatabase(app);
 
         let allData = []; // Menyimpan semua data untuk fitur pencarian dan export
+
+        // ==============================================================================
+        // 0. MODAL KONFIRMASI (REUSABLE)
+        // ==============================================================================
+        let confirmAction = null;
+
+        window.showConfirm = function(title, desc, actionCallback, iconClass = "fas fa-question text-3xl", iconBg = "bg-blue-100 text-blue-600") {
+            document.getElementById('confirm-title').innerText = title;
+            document.getElementById('confirm-desc').innerText = desc;
+            
+            const iconContainer = document.getElementById('confirm-icon');
+            iconContainer.className = `w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${iconBg}`;
+            iconContainer.innerHTML = `<i class="${iconClass}"></i>`;
+
+            confirmAction = actionCallback;
+
+            const modal = document.getElementById('confirm-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        window.closeConfirm = function() {
+            const modal = document.getElementById('confirm-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            confirmAction = null;
+        };
+
+        document.getElementById('btn-confirm-action').addEventListener('click', () => {
+            if(confirmAction) confirmAction();
+            closeConfirm();
+        });
+
 
         // ==============================================================================
         // 1. SISTEM AUTENTIKASI (LOGIN & LOGOUT)
@@ -415,9 +479,17 @@
                 });
         });
 
+        // Logout dengan konfirmasi
         document.getElementById('btn-logout').addEventListener('click', () => {
-            signOut(auth);
+            showConfirm(
+                'Konfirmasi Keluar', 
+                'Apakah Anda yakin ingin keluar dari halaman admin SPMB?', 
+                () => { signOut(auth); }, 
+                'fas fa-sign-out-alt text-3xl', 
+                'bg-red-100 text-red-600'
+            );
         });
+
 
         // ==============================================================================
         // 2. TAMPILKAN DATA KE TABEL DASHBOARD
@@ -428,7 +500,7 @@
                 const data = snapshot.val();
                 allData = [];
                 
-                let statPrestasi = 0, statZonasi = 0, statAfirmasi = 0;
+                let statPrestasi = 0, statZonasi = 0, statAfirmasi = 0, statPindahTugas = 0;
 
                 if (data) {
                     for (let id in data) {
@@ -439,6 +511,7 @@
                         if(p.jalur === 'Prestasi') statPrestasi++;
                         if(p.jalur === 'Zonasi') statZonasi++;
                         if(p.jalur && p.jalur.includes('Afirmasi')) statAfirmasi++;
+                        if(p.jalur && p.jalur.includes('Pindah')) statPindahTugas++;
                     }
                 }
                 
@@ -449,6 +522,7 @@
                 document.getElementById('stat-prestasi').innerText = statPrestasi;
                 document.getElementById('stat-zonasi').innerText = statZonasi;
                 document.getElementById('stat-afirmasi').innerText = statAfirmasi;
+                document.getElementById('stat-pindah').innerText = statPindahTugas;
 
                 renderAdminTable(allData);
             });
@@ -470,7 +544,7 @@
                     tglStr = `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)}/${d.getFullYear()}`;
                 }
 
-                let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : 'purple');
+                let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : (p.jalur.includes('Pindah') ? 'red' : 'purple'));
                 let displayNilai = new Intl.NumberFormat('id-ID').format(p.nilai || 0);
 
                 const tr = document.createElement('tr');
@@ -525,15 +599,25 @@
         });
 
         // ==============================================================================
-        // 3. FITUR EXPORT EXCEL (FULL DATA)
+        // 3. FITUR EXPORT EXCEL DENGAN KONFIRMASI
         // ==============================================================================
-        document.getElementById('btn-export-excel').addEventListener('click', (e) => {
+        window.confirmExport = function(e) {
             e.preventDefault();
             if(allData.length === 0) {
                 alert("Belum ada data untuk diexport!");
                 return;
             }
+            
+            showConfirm(
+                'Export Excel', 
+                'Anda akan mengunduh seluruh data pendaftar dalam format file .xlsx. Lanjutkan?', 
+                () => { executeExport(); }, 
+                'fas fa-file-excel text-3xl', 
+                'bg-green-100 text-green-600'
+            );
+        };
 
+        function executeExport() {
             // Memformat JSON agar rapi dan lengkap di Excel
             const excelData = allData.map((p, index) => {
                 let tglDaftar = p.waktu_daftar ? new Date(p.waktu_daftar).toLocaleString('id-ID') : "-";
@@ -587,8 +671,8 @@
             XLSX.utils.book_append_sheet(workbook, worksheet, "Semua Data Pendaftar");
             
             // Trigger Download
-            XLSX.writeFile(workbook, "Data_Lengkap_PPDB_SMPN1_Bandar_Seikijang.xlsx");
-        });
+            XLSX.writeFile(workbook, "Data_Lengkap_SPMB_SMPN1_Bandar_Seikijang.xlsx");
+        }
 
         // ==============================================================================
         // 4. MODAL DETAIL LENGKAP
@@ -732,7 +816,7 @@
             btnSave.disabled = true;
             btnSave.innerHTML = '<div class="loader" style="width:16px;height:16px;border-width:2px;border-top-color:white;"></div>';
             
-            // Ambil semua data dari form edit (Pastikan Koma dikonversi ke titik jika diperlukan)
+            // Ambil semua data dari form edit
             const updatedData = {
                 nama: document.getElementById('edit_nama').value,
                 jenis_kelamin: document.getElementById('edit_jk').value,
@@ -786,7 +870,6 @@
             } catch (error) {
                 console.error("Error Update:", error);
                 alertBox.className = "bg-red-100 text-red-700 text-sm p-3 rounded-lg mb-4 text-center";
-                // Pesan ini biasanya muncul jika Firebase Rules masih memblokir operasi update
                 alertBox.innerText = "Gagal memperbarui data. Pastikan Anda telah mengubah Firebase Rules.";
                 alertBox.classList.remove('hidden');
             } finally {
