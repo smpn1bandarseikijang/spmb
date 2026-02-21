@@ -126,13 +126,14 @@
                                 <th class="p-4">Nama Siswa</th>
                                 <th class="p-4">Asal Sekolah</th>
                                 <th class="p-4">Jalur</th>
-                                <th class="p-4 text-right">Nilai</th>
+                                <th class="p-4 text-right">Nilai RP</th>
+                                <th class="p-4 text-right">TKA</th>
                                 <th class="p-4 text-right">Jarak</th>
                                 <th class="p-4 text-center w-48">Status Seleksi</th>
                             </tr>
                         </thead>
                         <tbody id="tabel-body" class="text-sm">
-                            <tr><td colspan="8" class="text-center py-10"><div class="loader mx-auto"></div><p class="text-gray-500 mt-2">Memuat data dari Firebase...</p></td></tr>
+                            <tr><td colspan="9" class="text-center py-10"><div class="loader mx-auto"></div><p class="text-gray-500 mt-2">Memuat data dari Firebase...</p></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -236,7 +237,7 @@
         });
 
         // ==============================================================================
-        // 2. LOAD & RENDER TABLE (Sama seperti index.html)
+        // 2. LOAD & RENDER TABLE 
         // ==============================================================================
         function loadDataSeleksi() {
             const pendaftarRef = ref(db, 'pendaftar');
@@ -306,6 +307,7 @@
                 paginatedItems.forEach(p => {
                     let colorJalur = p.jalur === 'Domisili' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : (p.jalur === 'Mutasi' ? 'red' : 'purple'));
                     let displayNilai = new Intl.NumberFormat('id-ID').format(p.nilai || 0);
+                    let displayTKA = p.nilai_tka ? new Intl.NumberFormat('id-ID').format(p.nilai_tka) : '-';
 
                     // Logika Styling Tombol Switch
                     let status = p.status_seleksi || '';
@@ -320,6 +322,7 @@
                             <td class="p-4 text-gray-600 text-xs">${p.asal_sekolah || '-'}</td>
                             <td class="p-4"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur || '-'}</span></td>
                             <td class="p-4 font-bold text-gray-700 text-right">${displayNilai}</td>
+                            <td class="p-4 font-bold text-gray-700 text-right">${displayTKA}</td>
                             <td class="p-4 text-gray-600 text-right">${p.jarak_km || 0} Km</td>
                             <td class="p-4 text-center">
                                 <div class="inline-flex rounded-md shadow-sm" role="group">
@@ -335,7 +338,7 @@
                     `;
                 });
             } else {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">Pendaftar tidak ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-gray-500">Pendaftar tidak ditemukan.</td></tr>`;
             }
         }
 
