@@ -159,7 +159,7 @@
                                 <select id="fd_kip" onchange="toggleVisibility('fd_kip', 'kip-input-container', 'Ada')" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                                     <option value="" disabled selected>Pilih</option><option value="Ada">Ada</option><option value="Tidak">Tidak</option>
                                 </select>
-                                <div id="kip-input-container" class="hidden mt-2"><input type="text" id="fd_no_kip" class="w-full px-4 py-2 border border-gray-300 rounded-lg format-ribuan" placeholder="No. KIP/PIP"></div>
+                                <div id="kip-input-container" class="hidden mt-2"><input type="text" id="fd_no_kip" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="No. KIP/PIP"></div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Ijazah TK</label>
@@ -279,14 +279,26 @@
                                     <option value="Zonasi">Zonasi</option><option value="Prestasi">Prestasi</option><option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option><option value="PindahTugas">Perpindahan Tugas Orang Tua</option>
                                 </select>
                             </div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Rata - Rata Nilai Ijazah / SKL *</label><input type="text" id="fd_nilai" required class="w-full px-4 py-2 border border-gray-300 rounded-lg format-ribuan" placeholder="Contoh: 1.000"></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Nilai TKA (Opsional)</label><input type="text" id="fd_nilai_tka" class="w-full px-4 py-2 border border-gray-300 rounded-lg format-ribuan" placeholder="Contoh: 1.000"></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke Sekolah (Kilometer) *</label><input type="number" id="fd_jarak" step="0.1" required class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 1.5"></div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Rata - Rata Nilai Ijazah / SKL *</label>
+                                <input type="text" inputmode="decimal" id="fd_nilai" required class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 85,50">
+                                <p class="text-xs text-gray-500 mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nilai TKA (Opsional)</label>
+                                <input type="text" inputmode="decimal" id="fd_nilai_tka" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 85,50">
+                                <p class="text-xs text-gray-500 mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke Sekolah (Kilometer) *</label>
+                                <input type="text" inputmode="decimal" id="fd_jarak" required class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 1,5">
+                                <p class="text-xs text-gray-500 mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="flex flex-col sm:flex-row justify-end gap-4 mt-8">
-                        <button type="button" onclick="navigate('home')" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition w-full sm:w-auto font-medium">Batal</button>
+                        <button type="reset" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition w-full sm:w-auto font-medium">Reset</button>
                         <button type="submit" id="btn-submit" class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-800 transition shadow-md w-full sm:w-auto flex justify-center items-center">
                             Kirim Pendaftaran
                         </button>
@@ -407,19 +419,15 @@
             if(document.getElementById('modal-title').innerText.includes('Berhasil')) navigate('ranking');
         }
 
-        // Script untuk Memformat Input Ribuan Otomatis
+        // Script untuk Memformat Input Ribuan Otomatis (Hanya untuk kelas format-ribuan / Nominal Uang)
         document.addEventListener('input', function (e) {
             if (e.target.classList.contains('format-ribuan')) {
                 let val = e.target.value;
-                // Ganti koma dengan string kosong agar koma hilang/berubah otomatis
                 val = val.replace(/,/g, ''); 
-                // Hapus titik lama
                 val = val.replace(/\./g, ''); 
-                // Hanya sisakan karakter angka
                 val = val.replace(/\D/g, ''); 
                 
                 if (val !== '') {
-                    // Format ulang menggunakan pemisah ribuan standar Indonesia (titik)
                     e.target.value = new Intl.NumberFormat('id-ID').format(val);
                 } else {
                     e.target.value = '';
@@ -500,6 +508,15 @@
 
         // Mengunci form pada saat pertama kali dimuat
         lockForm();
+
+        // Saat Form di Reset
+        document.getElementById('form-pendaftaran').addEventListener('reset', () => {
+            setTimeout(() => {
+                lockForm();
+                // Sembunyikan field input 'Lainnya' jika terbuka
+                document.querySelectorAll('.hidden.mt-2').forEach(el => el.classList.add('hidden'));
+            }, 10);
+        });
 
         // Aksi Tombol Cek NISN
         document.getElementById('btn-cek-nisn').addEventListener('click', async () => {
@@ -589,7 +606,7 @@
                     }
 
                     let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : 'purple');
-                    // Format output nilai kembali ke bentuk ribuan titik
+                    // Format output nilai kembali ke bentuk desimal berkoma ala Indonesia
                     let displayNilai = new Intl.NumberFormat('id-ID').format(p.nilai || 0);
 
                     tbody.innerHTML += `
@@ -636,14 +653,6 @@
                 renderTable();
             });
         }
-
-        // Fungsi mengubah format ribuan (string dengan titik) kembali ke Number Javascript
-        const parseRibuanToNumber = (str) => {
-            if(!str) return 0;
-            const parsed = parseInt(str.replace(/\./g, ''), 10);
-            return isNaN(parsed) ? 0 : parsed;
-        };
-
 
         // ==========================================
         // PROSES SUBMIT PENDAFTARAN
@@ -693,10 +702,11 @@
 
                     asal_sekolah: document.getElementById('fd_asal_sekolah').value === 'SD Lainnya' ? document.getElementById('fd_asal_sekolah_lain').value : document.getElementById('fd_asal_sekolah').value,
                     jalur: document.getElementById('fd_jalur').value,
-                    // Nilai dan Nilai TKA di-unformat dulu ke pure integer agar saat sorting peringkat berjalan lancar
-                    nilai: parseRibuanToNumber(document.getElementById('fd_nilai').value),
-                    nilai_tka: document.getElementById('fd_nilai_tka').value ? parseRibuanToNumber(document.getElementById('fd_nilai_tka').value) : null,
-                    jarak_km: parseFloat(document.getElementById('fd_jarak').value),
+                    
+                    // Input Jarak & Nilai diparse dengan mengubah koma menjadi titik untuk mempermudah operasi sorting/database
+                    nilai: parseFloat(document.getElementById('fd_nilai').value.replace(',', '.')) || 0,
+                    nilai_tka: document.getElementById('fd_nilai_tka').value ? parseFloat(document.getElementById('fd_nilai_tka').value.replace(',', '.')) : null,
+                    jarak_km: parseFloat(document.getElementById('fd_jarak').value.replace(',', '.')) || 0,
                     
                     waktu_daftar: serverTimestamp() // Catat waktu Server Firebase
                 };
@@ -705,8 +715,8 @@
                 const pendaftarRef = ref(db, 'pendaftar');
                 await push(pendaftarRef, dataPendaftar);
 
-                document.getElementById('form-pendaftaran').reset();
-                lockForm(); // Kunci kembali form setelah submit berhasil
+                document.getElementById('form-pendaftaran').reset(); // Mengosongkan isian
+                // (Catatan: Lock form sudah tertangani otomatis oleh EventListener 'reset' di atas)
                 
                 showModal('success', 'Pendaftaran Berhasil!', 'Data telah tersimpan. Silakan cek Peringkat Sementara.');
 
