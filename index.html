@@ -305,6 +305,7 @@
                                 <th class="p-4 border-b-2 border-gray-200">#</th>
                                 <th class="p-4 border-b-2 border-gray-200">NISN</th>
                                 <th class="p-4 border-b-2 border-gray-200">Nama Siswa</th>
+                                <th class="p-4 border-b-2 border-gray-200">Asal Sekolah</th>
                                 <th class="p-4 border-b-2 border-gray-200">Jalur</th>
                                 <th class="p-4 border-b-2 border-gray-200">Nilai</th>
                                 <th class="p-4 border-b-2 border-gray-200">Jarak (Km)</th>
@@ -312,7 +313,7 @@
                             </tr>
                         </thead>
                         <tbody id="tabel-body" class="text-sm">
-                            <tr><td colspan="7" class="text-center py-8 text-gray-500">Memuat data pendaftar...</td></tr>
+                            <tr><td colspan="8" class="text-center py-8 text-gray-500">Memuat data pendaftar...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -453,6 +454,7 @@
                                 <td class="p-4 font-bold text-center">${no++}</td>
                                 <td class="p-4 font-mono text-gray-600">${p.nisn}</td>
                                 <td class="p-4 font-bold text-gray-800">${p.nama}</td>
+                                <td class="p-4 text-gray-700">${p.asal_sekolah}</td>
                                 <td class="p-4"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur}</span></td>
                                 <td class="p-4 font-bold text-secondary">${p.nilai}</td>
                                 <td class="p-4 text-gray-600">${p.jarak_km}</td>
@@ -461,7 +463,7 @@
                         `;
                     });
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-gray-500">Belum ada data pendaftar.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">Belum ada data pendaftar.</td></tr>`;
                     totalSpan.innerText = `Total: 0 Pendaftar`;
                 }
             });
