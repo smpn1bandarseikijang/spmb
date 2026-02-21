@@ -44,7 +44,7 @@
                         <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
                     </div>
                 </div>
-                <div id="login-error" class="hidden bg-red-100 text-red-600 text-sm p-3 rounded-lg mb-4 text-center"></div>
+                <div id="login-error" class="hidden bg-red-100 text-red-600 text-xs p-3 rounded-lg mb-4 text-center overflow-x-auto"></div>
                 <button type="submit" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition flex justify-center items-center">
                     Masuk
                 </button>
@@ -211,7 +211,7 @@
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
         // ==============================================================================
-        // KONFIGURASI FIREBASE REALTIME DATABASE (SAMA DENGAN INDEX.HTML)
+        // KONFIGURASI FIREBASE REALTIME DATABASE 
         // ==============================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyCeOhSar2LoSsR1hArXk_CUQuxpbxIkDQI",
@@ -270,10 +270,19 @@
                     btn.innerHTML = 'Masuk';
                     btn.disabled = false;
                     errorBox.classList.remove('hidden');
+                    console.error("Firebase Login Error:", error);
+                    
                     if(error.code === 'auth/invalid-credential') {
                         errorBox.innerText = 'Email atau Password salah!';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorBox.innerText = 'Format email tidak valid!';
+                    } else if (error.code === 'auth/user-not-found') {
+                        errorBox.innerText = 'Akun admin tidak ditemukan.';
+                    } else if (error.code === 'auth/network-request-failed') {
+                        errorBox.innerText = 'Koneksi terputus. Pastikan Anda tidak membuka file HTML langsung (file://). Gunakan localhost atau upload ke GitHub Pages.';
                     } else {
-                        errorBox.innerText = 'Terjadi kesalahan jaringan.';
+                        // Tampilkan error code aslinya agar mudah di debug
+                        errorBox.innerText = `Error: ${error.message} (${error.code})`;
                     }
                 });
         });
@@ -390,8 +399,7 @@
         window.showDetail = function(p) {
             const content = document.getElementById('detail-content');
             
-            // Format format uang & desimal
-            const formatRp = (val) => val ? 'Rp ' + new Intl.NumberFormat('id-ID').format(val) : 'Rp 0';
+            // Format desimal
             const formatNum = (val) => val ? new Intl.NumberFormat('id-ID').format(val) : '-';
 
             let html = `
