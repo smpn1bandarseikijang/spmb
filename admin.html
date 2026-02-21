@@ -57,11 +57,20 @@
     <!-- ================= ADMIN DASHBOARD ================= -->
     <div id="dashboard-screen" class="hidden w-full h-full flex">
         
+        <!-- Overlay for mobile sidebar -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
+
         <!-- Sidebar -->
-        <aside class="w-64 bg-gray-900 text-white flex flex-col hidden md:flex">
-            <div class="h-16 flex items-center px-6 border-b border-gray-800">
-                <i class="fas fa-graduation-cap text-yellow-500 text-2xl mr-3"></i>
-                <span class="font-bold text-lg tracking-wider">SPMB ADMIN</span>
+        <aside id="admin-sidebar" class="w-64 bg-gray-900 text-white flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 z-50 transition-transform duration-300 h-full shadow-2xl md:shadow-none">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-gray-800">
+                <div class="flex items-center">
+                    <i class="fas fa-graduation-cap text-yellow-500 text-2xl mr-3"></i>
+                    <span class="font-bold text-lg tracking-wider">SPMB ADMIN</span>
+                </div>
+                <!-- Tombol tutup khusus mobile -->
+                <button class="md:hidden text-gray-400 hover:text-white" onclick="toggleSidebar()">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
             </div>
             <div class="flex-grow overflow-y-auto py-4">
                 <ul class="space-y-1">
@@ -73,6 +82,12 @@
                     <li>
                         <a href="#" class="flex items-center px-6 py-3 bg-blue-800 text-white border-l-4 border-blue-500">
                             <i class="fas fa-users w-6"></i> Data Pendaftar
+                        </a>
+                    </li>
+                    <!-- Menu Seleksi -->
+                    <li>
+                        <a href="seleksi.html" class="flex items-center px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800 transition">
+                            <i class="fas fa-tasks w-6"></i> Seleksi
                         </a>
                     </li>
                     <!-- Menu Export Excel -->
@@ -97,14 +112,14 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col h-full overflow-hidden">
+        <div class="flex-1 flex flex-col h-full overflow-hidden w-full relative">
             <!-- Topbar -->
-            <header class="h-16 bg-white shadow-sm flex items-center justify-between px-6 z-10">
+            <header class="h-16 bg-white shadow-sm flex items-center justify-between px-4 sm:px-6 z-10 w-full shrink-0">
                 <div class="flex items-center">
-                    <button class="md:hidden text-gray-600 focus:outline-none mr-4">
+                    <button class="md:hidden text-gray-600 hover:text-blue-600 focus:outline-none mr-4" onclick="toggleSidebar()">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <h2 class="text-xl font-semibold text-gray-800">Data Pendaftar Masuk</h2>
+                    <h2 class="text-lg sm:text-xl font-semibold text-gray-800 truncate">Data Pendaftar Masuk</h2>
                 </div>
                 <div class="flex items-center">
                     <span class="text-sm text-gray-600 mr-4 hidden sm:block">Admin Akses</span>
@@ -117,52 +132,52 @@
             <!-- Content Area -->
             <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-100">
                 
-                <!-- Stat Cards (Diperbarui jadi 5 Kolom) -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500 flex items-center">
-                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4 hidden sm:block">
-                            <i class="fas fa-users text-xl"></i>
+                <!-- Stat Cards (5 Kolom) -->
+                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 mb-6">
+                    <div class="bg-white rounded-lg shadow-sm p-3 sm:p-4 border-l-4 border-blue-500 flex items-center">
+                        <div class="p-2 sm:p-3 rounded-full bg-blue-100 text-blue-600 mr-3 sm:mr-4 hidden sm:block">
+                            <i class="fas fa-users text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500 font-medium">Total</p>
-                            <p class="text-2xl font-bold text-gray-800" id="stat-total">0</p>
+                            <p class="text-xs sm:text-sm text-gray-500 font-medium">Total</p>
+                            <p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-total">0</p>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-green-500 flex items-center">
-                        <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4 hidden sm:block">
-                            <i class="fas fa-trophy text-xl"></i>
+                    <div class="bg-white rounded-lg shadow-sm p-3 sm:p-4 border-l-4 border-green-500 flex items-center">
+                        <div class="p-2 sm:p-3 rounded-full bg-green-100 text-green-600 mr-3 sm:mr-4 hidden sm:block">
+                            <i class="fas fa-trophy text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500 font-medium">Prestasi</p>
-                            <p class="text-2xl font-bold text-gray-800" id="stat-prestasi">0</p>
+                            <p class="text-xs sm:text-sm text-gray-500 font-medium">Prestasi</p>
+                            <p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-prestasi">0</p>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-indigo-500 flex items-center">
-                        <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4 hidden sm:block">
-                            <i class="fas fa-map-marked-alt text-xl"></i>
+                    <div class="bg-white rounded-lg shadow-sm p-3 sm:p-4 border-l-4 border-indigo-500 flex items-center">
+                        <div class="p-2 sm:p-3 rounded-full bg-indigo-100 text-indigo-600 mr-3 sm:mr-4 hidden sm:block">
+                            <i class="fas fa-map-marked-alt text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500 font-medium">Zonasi</p>
-                            <p class="text-2xl font-bold text-gray-800" id="stat-zonasi">0</p>
+                            <p class="text-xs sm:text-sm text-gray-500 font-medium">Domisili</p>
+                            <p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-domisili">0</p>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-yellow-500 flex items-center">
-                        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4 hidden sm:block">
-                            <i class="fas fa-hand-holding-heart text-xl"></i>
+                    <div class="bg-white rounded-lg shadow-sm p-3 sm:p-4 border-l-4 border-yellow-500 flex items-center">
+                        <div class="p-2 sm:p-3 rounded-full bg-yellow-100 text-yellow-600 mr-3 sm:mr-4 hidden sm:block">
+                            <i class="fas fa-hand-holding-heart text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500 font-medium">Afirmasi</p>
-                            <p class="text-2xl font-bold text-gray-800" id="stat-afirmasi">0</p>
+                            <p class="text-xs sm:text-sm text-gray-500 font-medium">Afirmasi</p>
+                            <p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-afirmasi">0</p>
                         </div>
                     </div>
-                    <!-- Card Baru: Perpindahan -->
-                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-red-500 flex items-center">
-                        <div class="p-3 rounded-full bg-red-100 text-red-600 mr-4 hidden sm:block">
-                            <i class="fas fa-truck-moving text-xl"></i>
+                    <!-- Card Baru: Mutasi -->
+                    <div class="bg-white rounded-lg shadow-sm p-3 sm:p-4 border-l-4 border-red-500 flex items-center col-span-2 md:col-span-1 xl:col-span-1">
+                        <div class="p-2 sm:p-3 rounded-full bg-red-100 text-red-600 mr-3 sm:mr-4 hidden sm:block">
+                            <i class="fas fa-truck-moving text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500 font-medium">Perpindahan</p>
-                            <p class="text-2xl font-bold text-gray-800" id="stat-pindah">0</p>
+                            <p class="text-xs sm:text-sm text-gray-500 font-medium">Mutasi</p>
+                            <p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-mutasi">0</p>
                         </div>
                     </div>
                 </div>
@@ -175,13 +190,13 @@
                             <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
                         </div>
                         <!-- Tombol refresh data -->
-                        <button onclick="window.location.reload()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center">
+                        <button onclick="window.location.reload()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 w-full sm:w-auto rounded-lg text-sm font-medium transition flex items-center justify-center">
                             <i class="fas fa-sync-alt mr-2"></i> Refresh
                         </button>
                     </div>
                     
                     <div class="table-container overflow-x-auto p-0">
-                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                        <table class="w-full text-left border-collapse whitespace-nowrap min-w-[800px]">
                             <thead>
                                 <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider">
                                     <th class="p-3 border-b">Tgl Daftar</th>
@@ -213,7 +228,7 @@
                 <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-id-card text-blue-600 mr-2"></i> Detail Lengkap Pendaftar</h3>
                 <button onclick="closeDetail()" class="text-gray-500 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
             </div>
-            <div class="p-6 overflow-y-auto modal-scroll" id="detail-content">
+            <div class="p-4 sm:p-6 overflow-y-auto modal-scroll" id="detail-content">
                 <!-- Konten di-generate via JS -->
             </div>
             <div class="p-4 border-t bg-gray-50 rounded-b-xl flex justify-end">
@@ -223,20 +238,20 @@
     </div>
 
     <!-- ================= MODAL EDIT SISWA (Semua Field) ================= -->
-    <div id="edit-modal" class="fixed inset-0 z-[110] bg-black bg-opacity-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-auto mt-5 max-h-[95vh] flex flex-col">
+    <div id="edit-modal" class="fixed inset-0 z-[110] bg-black bg-opacity-50 hidden items-center justify-center p-2 sm:p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-auto mt-2 sm:mt-5 max-h-[95vh] flex flex-col">
             <div class="p-4 border-b flex justify-between items-center bg-yellow-50 rounded-t-xl">
                 <h3 class="text-lg font-bold text-yellow-800"><i class="fas fa-edit text-yellow-600 mr-2"></i> Edit Semua Data Pendaftar</h3>
                 <button onclick="closeEdit()" class="text-gray-500 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
             </div>
-            <div class="p-6 overflow-y-auto modal-scroll bg-gray-50">
+            <div class="p-4 sm:p-6 overflow-y-auto modal-scroll bg-gray-50">
                 <form id="form-edit">
                     <input type="hidden" id="edit_firebase_id">
                     
                     <!-- 1. Data Peserta Didik -->
                     <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
                         <h4 class="font-bold text-blue-800 border-b pb-2 mb-4"><i class="fas fa-user mr-2"></i> Data Peserta Didik</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                             <div><label class="block text-xs font-medium text-gray-700 mb-1">NISN (Readonly)</label><input type="number" id="edit_nisn" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" readonly></div>
                             <div><label class="block text-xs font-medium text-gray-700 mb-1">Nama Lengkap</label><input type="text" id="edit_nama" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></div>
                             <div>
@@ -266,7 +281,7 @@
                                 </select>
                             </div>
                             <div><label class="block text-xs font-medium text-gray-700 mb-1">No. HP Siswa/Ortu</label><input type="tel" id="edit_hp_siswa" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></div>
-                            <div class="md:col-span-3"><label class="block text-xs font-medium text-gray-700 mb-1">Alamat Rumah</label><textarea id="edit_alamat" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></textarea></div>
+                            <div class="sm:col-span-2 md:col-span-3"><label class="block text-xs font-medium text-gray-700 mb-1">Alamat Rumah</label><textarea id="edit_alamat" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></textarea></div>
                         </div>
                     </div>
 
@@ -308,7 +323,7 @@
                                 <div>
                                     <label class="block text-xs font-medium text-gray-700 mb-1">Jalur</label>
                                     <select id="edit_jalur" class="w-full border border-gray-300 rounded-lg text-sm">
-                                        <option value="Zonasi">Zonasi</option><option value="Prestasi">Prestasi</option><option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option><option value="PindahTugas">Perpindahan Tugas Orang Tua</option>
+                                        <option value="Domisili">Domisili</option><option value="Prestasi">Prestasi</option><option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option><option value="Mutasi">Mutasi</option>
                                     </select>
                                 </div>
                                 <div><label class="block text-xs font-medium text-gray-700 mb-1">Jarak (Km)</label><input type="number" step="0.1" id="edit_jarak" class="w-full px-2 py-1 border border-gray-300 rounded-lg text-sm"></div>
@@ -399,6 +414,16 @@
         const db = getDatabase(app);
 
         let allData = []; // Menyimpan semua data untuk fitur pencarian dan export
+
+        // ==============================================================================
+        // 0. MOBILE SIDEBAR TOGGLE
+        // ==============================================================================
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('admin-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        };
 
         // ==============================================================================
         // 0. MODAL KONFIRMASI (REUSABLE)
@@ -500,7 +525,7 @@
                 const data = snapshot.val();
                 allData = [];
                 
-                let statPrestasi = 0, statZonasi = 0, statAfirmasi = 0, statPindahTugas = 0;
+                let statPrestasi = 0, statDomisili = 0, statAfirmasi = 0, statMutasi = 0;
 
                 if (data) {
                     for (let id in data) {
@@ -509,9 +534,9 @@
                         allData.push(p);
 
                         if(p.jalur === 'Prestasi') statPrestasi++;
-                        if(p.jalur === 'Zonasi') statZonasi++;
+                        if(p.jalur === 'Domisili') statDomisili++;
                         if(p.jalur && p.jalur.includes('Afirmasi')) statAfirmasi++;
-                        if(p.jalur && p.jalur.includes('Pindah')) statPindahTugas++;
+                        if(p.jalur === 'Mutasi') statMutasi++;
                     }
                 }
                 
@@ -520,9 +545,9 @@
 
                 document.getElementById('stat-total').innerText = allData.length;
                 document.getElementById('stat-prestasi').innerText = statPrestasi;
-                document.getElementById('stat-zonasi').innerText = statZonasi;
+                document.getElementById('stat-domisili').innerText = statDomisili;
                 document.getElementById('stat-afirmasi').innerText = statAfirmasi;
-                document.getElementById('stat-pindah').innerText = statPindahTugas;
+                document.getElementById('stat-mutasi').innerText = statMutasi;
 
                 renderAdminTable(allData);
             });
@@ -544,7 +569,7 @@
                     tglStr = `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)}/${d.getFullYear()}`;
                 }
 
-                let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : (p.jalur.includes('Pindah') ? 'red' : 'purple'));
+                let colorJalur = p.jalur === 'Domisili' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : (p.jalur === 'Mutasi' ? 'red' : 'purple'));
                 let displayNilai = new Intl.NumberFormat('id-ID').format(p.nilai || 0);
 
                 const tr = document.createElement('tr');
@@ -556,7 +581,7 @@
                     <td class="p-3 text-gray-600">${p.hp_siswa || '-'}</td>
                     <td class="p-3 text-gray-700">${p.asal_sekolah || '-'}</td>
                     <td class="p-3"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur || '-'}</span></td>
-                    <td class="p-3 text-right font-bold text-gray-600">${p.jalur === 'Zonasi' ? (p.jarak_km||0) + ' Km' : displayNilai}</td>
+                    <td class="p-3 text-right font-bold text-gray-600">${p.jalur === 'Domisili' ? (p.jarak_km||0) + ' Km' : displayNilai}</td>
                     <td class="p-3 text-center space-x-1">
                         <button class="btn-detail bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded text-xs font-bold transition" data-index="${index}">
                             <i class="fas fa-eye"></i>
@@ -638,7 +663,7 @@
                     
                     "Asal Sekolah Dasar": p.asal_sekolah,
                     "Jalur Pendaftaran": p.jalur,
-                    "Jarak Zonasi (Km)": p.jarak_km,
+                    "Jarak Domisili (Km)": p.jarak_km,
                     "Nilai Rata-rata Ijazah": p.nilai,
                     "Nilai TKA": p.nilai_tka || "-",
                     
@@ -703,7 +728,7 @@
                             <tr><td class="py-1 text-gray-600">Jalur</td><td class="py-1 font-bold text-indigo-700">${p.jalur || '-'}</td></tr>
                             <tr><td class="py-1 text-gray-600">Rata2 Ijazah</td><td class="py-1 font-bold text-red-600">${formatNum(p.nilai)}</td></tr>
                             <tr><td class="py-1 text-gray-600">Nilai TKA</td><td class="py-1">${formatNum(p.nilai_tka)}</td></tr>
-                            <tr><td class="py-1 text-gray-600">Jarak Zonasi</td><td class="py-1">${formatNum(p.jarak_km)} Km</td></tr>
+                            <tr><td class="py-1 text-gray-600">Jarak Domisili</td><td class="py-1">${formatNum(p.jarak_km)} Km</td></tr>
                         </table>
                     </div>
 
@@ -773,7 +798,7 @@
 
             // 3. Sekolah
             document.getElementById('edit_asal_sekolah').value = p.asal_sekolah || '';
-            document.getElementById('edit_jalur').value = p.jalur || 'Zonasi';
+            document.getElementById('edit_jalur').value = p.jalur || 'Domisili';
             document.getElementById('edit_jarak').value = p.jarak_km || '';
             document.getElementById('edit_nilai').value = p.nilai || '';
             document.getElementById('edit_nilai_tka').value = p.nilai_tka || '';
