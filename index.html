@@ -159,7 +159,7 @@
                                 <select id="fd_kip" onchange="toggleVisibility('fd_kip', 'kip-input-container', 'Ada')" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                                     <option value="" disabled selected>Pilih</option><option value="Ada">Ada</option><option value="Tidak">Tidak</option>
                                 </select>
-                                <div id="kip-input-container" class="hidden mt-2"><input type="text" id="fd_no_kip" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="No. KIP/PIP"></div>
+                                <div id="kip-input-container" class="hidden mt-2"><input type="text" id="fd_no_kip" class="w-full px-4 py-2 border border-gray-300 rounded-lg format-ribuan" placeholder="No. KIP/PIP"></div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Ijazah TK</label>
@@ -210,7 +210,7 @@
                                     </select>
                                     <div id="kerja-ayah-other" class="hidden mt-2"><input type="text" id="fd_pekerjaan_ayah_lain" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ketik manual..."></div>
                                 </div>
-                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Penghasilan (Rp)</label><input type="text" id="fd_gaji_ayah" value="1.000.000" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Penghasilan (Rp)</label><input type="text" id="fd_gaji_ayah" value="1.000.000" class="w-full px-4 py-2 border border-gray-300 rounded-lg format-ribuan"></div>
                             </div>
                         </div>
                         <!-- Ibu -->
@@ -232,7 +232,7 @@
                                     </select>
                                     <div id="kerja-ibu-other" class="hidden mt-2"><input type="text" id="fd_pekerjaan_ibu_lain" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ketik manual..."></div>
                                 </div>
-                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Penghasilan (Rp)</label><input type="text" id="fd_gaji_ibu" value="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Penghasilan (Rp)</label><input type="text" id="fd_gaji_ibu" value="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg format-ribuan"></div>
                             </div>
                         </div>
                         <!-- Wali -->
@@ -249,7 +249,7 @@
                                     <div id="kerja-wali-other" class="hidden mt-2"><input type="text" id="fd_pekerjaan_wali_lain" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ketik manual..."></div>
                                 </div>
                                 <div><label class="block text-sm font-medium text-gray-700 mb-1">No. HP Wali</label><input type="tel" id="fd_hp_wali" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
-                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Penghasilan Wali (Rp)</label><input type="text" id="fd_gaji_wali" value="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Penghasilan Wali (Rp)</label><input type="text" id="fd_gaji_wali" value="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg format-ribuan"></div>
                             </div>
                         </div>
                     </div>
@@ -279,7 +279,8 @@
                                     <option value="Zonasi">Zonasi</option><option value="Prestasi">Prestasi</option><option value="Afirmasi">Afirmasi (Keluarga Tidak Mampu)</option><option value="PindahTugas">Perpindahan Tugas Orang Tua</option>
                                 </select>
                             </div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Rata - Rata Nilai Ijazah / SKL *</label><input type="number" id="fd_nilai" step="0.01" required class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 85.50"></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Rata - Rata Nilai Ijazah / SKL *</label><input type="text" id="fd_nilai" required class="w-full px-4 py-2 border border-gray-300 rounded-lg format-ribuan" placeholder="Contoh: 1.000"></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Nilai TKA (Opsional)</label><input type="text" id="fd_nilai_tka" class="w-full px-4 py-2 border border-gray-300 rounded-lg format-ribuan" placeholder="Contoh: 1.000"></div>
                             <div><label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke Sekolah (Kilometer) *</label><input type="number" id="fd_jarak" step="0.1" required class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 1.5"></div>
                         </div>
                     </div>
@@ -342,6 +343,13 @@
             </div>
         </div>
     </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-8 mt-auto">
+        <div class="border-t border-gray-800 mt-2 pt-6 text-center text-sm">
+            <p>Developement by Andri F. &copy; 2026 Panitia PPDB SMPN 1 Bandar Seikijang. <br/> Dikembangkan menggunakan HTML & Tailwind CSS.</p>
+        </div>
+    </footer>
 
     <!-- Modal Success/Error -->
     <div id="alert-modal" class="fixed inset-0 z-[100] bg-black bg-opacity-50 hidden flex-items-center justify-center p-4">
@@ -398,6 +406,26 @@
             document.getElementById('alert-modal').classList.remove('flex');
             if(document.getElementById('modal-title').innerText.includes('Berhasil')) navigate('ranking');
         }
+
+        // Script untuk Memformat Input Ribuan Otomatis
+        document.addEventListener('input', function (e) {
+            if (e.target.classList.contains('format-ribuan')) {
+                let val = e.target.value;
+                // Ganti koma dengan string kosong agar koma hilang/berubah otomatis
+                val = val.replace(/,/g, ''); 
+                // Hapus titik lama
+                val = val.replace(/\./g, ''); 
+                // Hanya sisakan karakter angka
+                val = val.replace(/\D/g, ''); 
+                
+                if (val !== '') {
+                    // Format ulang menggunakan pemisah ribuan standar Indonesia (titik)
+                    e.target.value = new Intl.NumberFormat('id-ID').format(val);
+                } else {
+                    e.target.value = '';
+                }
+            }
+        });
     </script>
 
     <!-- FIREBASE REALTIME DATABASE LOGIC -->
@@ -561,6 +589,8 @@
                     }
 
                     let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : 'purple');
+                    // Format output nilai kembali ke bentuk ribuan titik
+                    let displayNilai = new Intl.NumberFormat('id-ID').format(p.nilai || 0);
 
                     tbody.innerHTML += `
                         <tr class="hover:bg-blue-50 border-b border-gray-100">
@@ -569,7 +599,7 @@
                             <td class="p-4 font-bold text-gray-800">${p.nama}</td>
                             <td class="p-4 text-gray-700">${p.asal_sekolah}</td>
                             <td class="p-4"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur}</span></td>
-                            <td class="p-4 font-bold text-secondary">${p.nilai}</td>
+                            <td class="p-4 font-bold text-secondary">${displayNilai}</td>
                             <td class="p-4 text-gray-600">${p.jarak_km}</td>
                             <td class="p-4 text-center text-xs text-gray-500">${tglStr}</td>
                         </tr>
@@ -606,6 +636,13 @@
                 renderTable();
             });
         }
+
+        // Fungsi mengubah format ribuan (string dengan titik) kembali ke Number Javascript
+        const parseRibuanToNumber = (str) => {
+            if(!str) return 0;
+            const parsed = parseInt(str.replace(/\./g, ''), 10);
+            return isNaN(parsed) ? 0 : parsed;
+        };
 
 
         // ==========================================
@@ -656,7 +693,9 @@
 
                     asal_sekolah: document.getElementById('fd_asal_sekolah').value === 'SD Lainnya' ? document.getElementById('fd_asal_sekolah_lain').value : document.getElementById('fd_asal_sekolah').value,
                     jalur: document.getElementById('fd_jalur').value,
-                    nilai: parseFloat(document.getElementById('fd_nilai').value),
+                    // Nilai dan Nilai TKA di-unformat dulu ke pure integer agar saat sorting peringkat berjalan lancar
+                    nilai: parseRibuanToNumber(document.getElementById('fd_nilai').value),
+                    nilai_tka: document.getElementById('fd_nilai_tka').value ? parseRibuanToNumber(document.getElementById('fd_nilai_tka').value) : null,
                     jarak_km: parseFloat(document.getElementById('fd_jarak').value),
                     
                     waktu_daftar: serverTimestamp() // Catat waktu Server Firebase
