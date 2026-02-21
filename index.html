@@ -110,7 +110,14 @@
                     <div class="mb-10">
                         <h3 class="text-xl font-semibold text-primary mb-4 border-b pb-2"><i class="fas fa-user mr-2"></i> Data Peserta Didik</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label class="block text-sm font-medium text-gray-700 mb-1">NISN (10 Digit) *</label><input type="number" id="fd_nisn" required minlength="10" maxlength="10" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">NISN (10 Digit) *</label>
+                                <div class="flex space-x-2">
+                                    <input type="number" id="fd_nisn" required minlength="10" maxlength="10" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Masukkan 10 digit NISN">
+                                    <button type="button" id="btn-cek-nisn" class="bg-secondary hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-lg transition shadow-sm whitespace-nowrap"><i class="fas fa-search"></i> Cek NISN</button>
+                                </div>
+                                <p id="nisn-status" class="text-xs text-red-500 mt-2"><i class="fas fa-lock"></i> Silakan cek NISN terlebih dahulu.</p>
+                            </div>
                             <div><label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label><input type="text" id="fd_nama" required class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin *</label>
@@ -294,9 +301,15 @@
                 <h2 class="text-3xl font-bold text-primary border-b-4 border-accent pb-2 inline-block">Hasil & Peringkat Sementara</h2>
             </div>
             <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-                <div class="flex justify-between items-center mb-4">
-                    <p class="text-gray-600 text-sm"><i class="fas fa-satellite-dish text-green-500 mr-1"></i> Data Real-time dari Server</p>
-                    <span id="total-pendaftar" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Total: 0 Pendaftar</span>
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <p class="text-gray-600 text-sm"><i class="fas fa-satellite-dish text-green-500 mr-1"></i> Data Real-time</p>
+                    <div class="flex items-center space-x-3 w-full md:w-auto">
+                        <div class="relative w-full md:w-72">
+                            <input type="text" id="search-ranking" placeholder="Cari Nama / NISN..." class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm pl-10 focus:outline-none focus:ring-2 focus:ring-secondary">
+                            <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+                        </div>
+                        <span id="total-pendaftar" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-2 rounded whitespace-nowrap">Total: 0 Pendaftar</span>
+                    </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -316,6 +329,15 @@
                             <tr><td colspan="8" class="text-center py-8 text-gray-500">Memuat data pendaftar...</td></tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div class="flex items-center justify-between mt-6">
+                    <span class="text-sm text-gray-600" id="page-info">Menampilkan 0 data</span>
+                    <div class="flex space-x-2">
+                        <button id="btn-prev-page" class="px-3 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-50 transition"><i class="fas fa-chevron-left"></i></button>
+                        <button id="btn-next-page" class="px-3 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-50 transition"><i class="fas fa-chevron-right"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -382,7 +404,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, serverTimestamp, query, orderByChild, equalTo, get } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
         // ==============================================================================
         // KONFIGURASI FIREBASE REALTIME DATABASE (ACTIVE)
@@ -397,86 +419,200 @@
             appId: "1:915422129101:web:a93838926952ccc1f9b284"
         };
 
-        // Inisialisasi Firebase
         let db;
         try {
             const app = initializeApp(firebaseConfig);
             db = getDatabase(app);
-            
-            // Login anonim agar koneksi database diijinkan (Best Practice Firebase)
             const auth = getAuth(app);
-            signInAnonymously(auth).catch((error) => console.log("Auth Anonim error (Mungkin test mode terbuka tanpa auth):", error));
-            
+            signInAnonymously(auth).catch((error) => console.log("Auth Anonim error:", error));
             console.log("Firebase Realtime DB disiapkan!");
-            loadDataRealtime(); // Jalankan fungsi memuat tabel peringkat
+            loadDataRealtime(); 
         } catch (error) {
             console.error("Gagal inisialisasi Firebase.", error);
         }
 
-        // Fungsi Membaca Data untuk Tabel Peringkat (REAL-TIME)
-        function loadDataRealtime() {
-            if(firebaseConfig.apiKey === "GANTI_DENGAN_API_KEY_ANDA") return;
+        // ==========================================
+        // FITUR KUNCI FORM & CEK NISN
+        // ==========================================
+        const formElements = document.querySelectorAll('#form-pendaftaran input, #form-pendaftaran select, #form-pendaftaran textarea, #btn-submit');
+        
+        function lockForm() {
+            formElements.forEach(el => {
+                if(el.id !== 'fd_nisn' && el.id !== 'btn-cek-nisn') {
+                    el.disabled = true;
+                    el.classList.add('bg-gray-100', 'cursor-not-allowed', 'opacity-70');
+                }
+            });
+            document.getElementById('btn-submit').disabled = true;
+            document.getElementById('fd_nisn').disabled = false;
+            document.getElementById('fd_nisn').classList.remove('bg-gray-100', 'cursor-not-allowed', 'opacity-70');
+            document.getElementById('btn-cek-nisn').disabled = false;
+            
+            const statusEl = document.getElementById('nisn-status');
+            statusEl.innerHTML = '<i class="fas fa-lock"></i> Silakan cek NISN terlebih dahulu.';
+            statusEl.className = 'text-xs text-red-500 mt-2';
+        }
 
+        function unlockForm() {
+            formElements.forEach(el => {
+                el.disabled = false;
+                el.classList.remove('bg-gray-100', 'cursor-not-allowed', 'opacity-70');
+            });
+            document.getElementById('btn-submit').disabled = false;
+            
+            // Kunci input NISN agar tidak diubah setelah tervalidasi
+            document.getElementById('fd_nisn').disabled = true;
+            document.getElementById('fd_nisn').classList.add('bg-gray-100', 'cursor-not-allowed', 'opacity-70');
+            document.getElementById('btn-cek-nisn').disabled = true;
+
+            const statusEl = document.getElementById('nisn-status');
+            statusEl.innerHTML = '<i class="fas fa-unlock"></i> NISN belum terdaftar. Form dibuka, silakan lanjut.';
+            statusEl.className = 'text-xs text-green-600 mt-2 font-medium';
+        }
+
+        // Mengunci form pada saat pertama kali dimuat
+        lockForm();
+
+        // Aksi Tombol Cek NISN
+        document.getElementById('btn-cek-nisn').addEventListener('click', async () => {
+            const nisnVal = document.getElementById('fd_nisn').value.trim();
+            if(nisnVal.length !== 10) {
+                showModal('error', 'NISN Tidak Valid', 'Pastikan NISN berjumlah persis 10 digit angka.');
+                return;
+            }
+
+            const btnCek = document.getElementById('btn-cek-nisn');
+            btnCek.innerHTML = '<div class="loader" style="width:16px;height:16px;border-width:2px;"></div>';
+            btnCek.disabled = true;
+
+            try {
+                // Mengecek apakah ada NISN yang sama di Database
+                const pendaftarRef = ref(db, 'pendaftar');
+                const cekQuery = query(pendaftarRef, orderByChild('nisn'), equalTo(nisnVal));
+                const snapshot = await get(cekQuery);
+                
+                if (snapshot.exists()) {
+                    showModal('error', 'Pendaftaran Ditolak', `Siswa dengan NISN ${nisnVal} sudah melakukan pendaftaran sebelumnya.`);
+                    btnCek.innerHTML = '<i class="fas fa-search"></i> Cek NISN';
+                    btnCek.disabled = false;
+                } else {
+                    unlockForm();
+                    btnCek.innerHTML = '<i class="fas fa-check"></i> OK';
+                }
+            } catch(e) {
+                console.error(e);
+                showModal('error', 'Gagal Mengecek', 'Terjadi kesalahan sistem. Pastikan koneksi internet stabil.');
+                btnCek.innerHTML = '<i class="fas fa-search"></i> Cek NISN';
+                btnCek.disabled = false;
+            }
+        });
+
+
+        // ==========================================
+        // FITUR RANKING, PENCARIAN & PAGINATION
+        // ==========================================
+        let allPendaftar = [];
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let searchQuery = '';
+
+        function renderTable() {
+            const tbody = document.getElementById('tabel-body');
+            const totalSpan = document.getElementById('total-pendaftar');
+            const pageInfo = document.getElementById('page-info');
+            const btnPrev = document.getElementById('btn-prev-page');
+            const btnNext = document.getElementById('btn-next-page');
+
+            // 1. Proses Filtering (Pencarian)
+            let filtered = allPendaftar.filter(p => {
+                if(!searchQuery) return true;
+                const searchLower = searchQuery.toLowerCase();
+                return (p.nama && p.nama.toLowerCase().includes(searchLower)) || 
+                       (p.nisn && p.nisn.includes(searchLower));
+            });
+
+            // 2. Proses Sorting (Nilai Tertinggi)
+            filtered.sort((a, b) => b.nilai - a.nilai);
+
+            totalSpan.innerText = `Total: ${filtered.length} Pendaftar`;
+
+            // 3. Proses Pagination
+            const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedItems = filtered.slice(startIndex, endIndex);
+
+            pageInfo.innerText = `Menampilkan ${filtered.length === 0 ? 0 : startIndex + 1}-${Math.min(endIndex, filtered.length)} dari total ${filtered.length} data`;
+            
+            btnPrev.disabled = currentPage === 1;
+            btnNext.disabled = currentPage === totalPages || filtered.length === 0;
+
+            // 4. Render ke Tabel
+            if (paginatedItems.length > 0) {
+                tbody.innerHTML = '';
+                let no = startIndex + 1;
+                paginatedItems.forEach(p => {
+                    let tglStr = "-";
+                    if(p.waktu_daftar) {
+                        const d = new Date(p.waktu_daftar);
+                        tglStr = `${('0'+d.getDate()).slice(-2)}/${('0'+(d.getMonth()+1)).slice(-2)} ${('0'+d.getHours()).slice(-2)}:${('0'+d.getMinutes()).slice(-2)}`;
+                    }
+
+                    let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : 'purple');
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-blue-50 border-b border-gray-100">
+                            <td class="p-4 font-bold text-center">${no++}</td>
+                            <td class="p-4 font-mono text-gray-600">${p.nisn}</td>
+                            <td class="p-4 font-bold text-gray-800">${p.nama}</td>
+                            <td class="p-4 text-gray-700">${p.asal_sekolah}</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur}</span></td>
+                            <td class="p-4 font-bold text-secondary">${p.nilai}</td>
+                            <td class="p-4 text-gray-600">${p.jarak_km}</td>
+                            <td class="p-4 text-center text-xs text-gray-500">${tglStr}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">Data pendaftar tidak ditemukan.</td></tr>`;
+            }
+        }
+
+        // Listener Pencarian & Pagination
+        document.getElementById('search-ranking').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            currentPage = 1; // Kembali ke halaman 1 saat mencari
+            renderTable();
+        });
+        document.getElementById('btn-prev-page').addEventListener('click', () => {
+            if(currentPage > 1) { currentPage--; renderTable(); }
+        });
+        document.getElementById('btn-next-page').addEventListener('click', () => {
+            currentPage++; renderTable();
+        });
+
+        function loadDataRealtime() {
             const pendaftarRef = ref(db, 'pendaftar');
             onValue(pendaftarRef, (snapshot) => {
                 const data = snapshot.val();
-                const tbody = document.getElementById('tabel-body');
-                const totalSpan = document.getElementById('total-pendaftar');
-                
+                allPendaftar = [];
                 if (data) {
-                    tbody.innerHTML = ''; // Bersihkan tabel
-                    let pendaftarArray = [];
-                    
-                    // Ubah object JSON dari Firebase menjadi Array
                     for (let id in data) {
-                        pendaftarArray.push({ id: id, ...data[id] });
+                        allPendaftar.push({ id: id, ...data[id] });
                     }
-                    
-                    // Urutkan (Ranking) secara sederhana berdasarkan nilai tertinggi (Contoh)
-                    pendaftarArray.sort((a, b) => b.nilai - a.nilai);
-                    
-                    totalSpan.innerText = `Total: ${pendaftarArray.length} Pendaftar`;
-
-                    let no = 1;
-                    pendaftarArray.forEach(p => {
-                        // Format tanggal daftar
-                        let tglStr = "-";
-                        if(p.waktu_daftar) {
-                            const d = new Date(p.waktu_daftar);
-                            tglStr = `${d.getDate()}/${d.getMonth()+1} ${d.getHours()}:${(d.getMinutes()<10?'0':'') + d.getMinutes()}`;
-                        }
-
-                        // Label Warna Jalur
-                        let colorJalur = p.jalur === 'Zonasi' ? 'blue' : (p.jalur === 'Prestasi' ? 'green' : 'purple');
-
-                        tbody.innerHTML += `
-                            <tr class="hover:bg-blue-50 border-b border-gray-100">
-                                <td class="p-4 font-bold text-center">${no++}</td>
-                                <td class="p-4 font-mono text-gray-600">${p.nisn}</td>
-                                <td class="p-4 font-bold text-gray-800">${p.nama}</td>
-                                <td class="p-4 text-gray-700">${p.asal_sekolah}</td>
-                                <td class="p-4"><span class="px-2 py-1 bg-${colorJalur}-100 text-${colorJalur}-800 rounded text-xs font-semibold">${p.jalur}</span></td>
-                                <td class="p-4 font-bold text-secondary">${p.nilai}</td>
-                                <td class="p-4 text-gray-600">${p.jarak_km}</td>
-                                <td class="p-4 text-center text-xs text-gray-500">${tglStr}</td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">Belum ada data pendaftar.</td></tr>`;
-                    totalSpan.innerText = `Total: 0 Pendaftar`;
                 }
+                renderTable();
             });
         }
 
-        // Fungsi Menyimpan Data (Push ke Realtime Database)
+
+        // ==========================================
+        // PROSES SUBMIT PENDAFTARAN
+        // ==========================================
         document.getElementById('form-pendaftaran').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            if(firebaseConfig.apiKey === "GANTI_DENGAN_API_KEY_ANDA") {
-                showModal('error', 'Konfigurasi Belum Selesai', 'Anda belum memasukkan kode firebaseConfig Anda ke dalam HTML.');
-                return;
-            }
 
             const btnSubmit = document.getElementById('btn-submit');
             const originalBtnText = btnSubmit.innerHTML;
@@ -531,11 +667,13 @@
                 await push(pendaftarRef, dataPendaftar);
 
                 document.getElementById('form-pendaftaran').reset();
+                lockForm(); // Kunci kembali form setelah submit berhasil
+                
                 showModal('success', 'Pendaftaran Berhasil!', 'Data telah tersimpan. Silakan cek Peringkat Sementara.');
 
             } catch (error) {
                 console.error("Error simpan data: ", error);
-                showModal('error', 'Gagal Mengirim', 'Terjadi kesalahan jaringan atau database tidak dalam mode uji (Test Mode).');
+                showModal('error', 'Gagal Mengirim', 'Terjadi kesalahan jaringan atau koneksi.');
             } finally {
                 btnSubmit.innerHTML = originalBtnText;
                 btnSubmit.disabled = false;
