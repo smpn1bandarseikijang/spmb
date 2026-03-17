@@ -113,7 +113,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">NISN (10 Digit) *</label>
                                 <div class="flex space-x-2">
-                                    <input type="number" id="fd_nisn" required minlength="10" maxlength="10" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Masukkan 10 digit NISN">
+                                    <input type="text" inputmode="numeric" id="fd_nisn" required minlength="10" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition" placeholder="Masukkan 10 digit NISN">
                                     <button type="button" id="btn-cek-nisn" class="bg-secondary hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-lg transition shadow-sm whitespace-nowrap"><i class="fas fa-search"></i> Cek NISN</button>
                                 </div>
                                 <p id="nisn-status" class="text-xs text-red-500 mt-2"><i class="fas fa-lock"></i> Silakan cek NISN terlebih dahulu.</p>
@@ -146,6 +146,14 @@
                                 </select>
                             </div>
                             <div><label class="block text-sm font-medium text-gray-700 mb-1">No. HP Orang Tua/Siswa *</label><input type="tel" id="fd_hp_siswa" required class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke SMP (Kilometer) *</label>
+                                <div class="flex space-x-2">
+                                    <input type="text" inputmode="decimal" id="fd_jarak" required readonly class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg cursor-not-allowed focus:outline-none" placeholder="Otomatis dihitung...">
+                                    <button type="button" id="btn-lokasi" onclick="dapatkanLokasi()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition shadow-sm whitespace-nowrap" title="Hitung Jarak Otomatis"><i class="fas fa-map-marker-alt"></i> Hitung</button>
+                                </div>
+                                <p id="jarak-status" class="text-xs text-indigo-600 font-medium mt-2"><i class="fas fa-info-circle"></i> Klik tombol untuk menghitung jarak otomatis dari GPS perangkat.</p>
+                            </div>
                             <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">Alamat Rumah *</label><textarea id="fd_alamat" required rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea></div>
                         </div>
                     </div>
@@ -290,11 +298,6 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nilai TKA (Opsional)</label>
                                 <input type="text" inputmode="decimal" id="fd_nilai_tka" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 85,50">
-                                <p class="text-xs text-red-500 font-medium mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Jarak Rumah ke SMP (Kilometer) *</label>
-                                <input type="text" inputmode="decimal" id="fd_jarak" required class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contoh: 1,5">
                                 <p class="text-xs text-red-500 font-medium mt-1 italic">*Gunakan koma (,) sebagai pemisah.</p>
                             </div>
                         </div>
@@ -517,6 +520,88 @@
                 }
             }
         });
+
+        // ==========================================
+        // FITUR DETEKSI JARAK OTOMATIS (GEOLOCATION)
+        // ==========================================
+        const latSekolah = 0.42689144220387365;
+        const lonSekolah = 101.64708353539984;
+
+        function dapatkanLokasi() {
+            const btnLokasi = document.getElementById('btn-lokasi');
+            const statusLokasi = document.getElementById('jarak-status');
+
+            btnLokasi.innerHTML = '<div class="loader" style="width:16px;height:16px;border-width:2px;display:inline-block;vertical-align:middle;border-top-color:#fff"></div>';
+            btnLokasi.disabled = true;
+            statusLokasi.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sedang meminta izin lokasi GPS...';
+            statusLokasi.className = 'text-xs text-indigo-600 font-medium mt-2';
+
+            if (navigator.geolocation) {
+                // Meminta lokasi dengan akurasi tinggi
+                navigator.geolocation.getCurrentPosition(hitungJarakHaversine, showErrorGPS, {
+                    enableHighAccuracy: true,
+                    timeout: 10000, // Timeout 10 detik
+                    maximumAge: 0
+                });
+            } else {
+                statusLokasi.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Browser Anda tidak mendukung deteksi lokasi.';
+                statusLokasi.className = 'text-xs text-red-600 font-medium mt-2';
+                resetBtnLokasi();
+            }
+        }
+
+        function hitungJarakHaversine(position) {
+            const latSiswa = position.coords.latitude;
+            const lonSiswa = position.coords.longitude;
+            const statusLokasi = document.getElementById('jarak-status');
+
+            // Rumus Haversine (Jarak Tarikan Garis Lurus Permukaan Bumi)
+            const R = 6371; // Radius bumi dalam kilometer
+            const dLat = (latSiswa - latSekolah) * Math.PI / 180;
+            const dLon = (lonSiswa - lonSekolah) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(latSekolah * Math.PI / 180) * Math.cos(latSiswa * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const jarakKm = R * c; 
+
+            // Ubah format jarak dengan koma (ID locale) untuk konsistensi input desimal di Indonesia
+            const jarakFormatted = jarakKm.toFixed(2).replace('.', ',');
+            
+            document.getElementById("fd_jarak").value = jarakFormatted;
+            
+            showModal('success', 'Lokasi Ditemukan', `Koordinat berhasil didapat. Jarak udara (garis lurus) terhitung sebesar ${jarakFormatted} Km.`);
+            statusLokasi.innerHTML = `<i class="fas fa-check-circle"></i> Sukses: Jarak dari koordinat Anda ke SMPN 1 Bd. Seikijang adalah ${jarakFormatted} Km.`;
+            statusLokasi.className = 'text-xs text-green-600 font-medium mt-2';
+            resetBtnLokasi();
+        }
+
+        function showErrorGPS(error) {
+            const statusLokasi = document.getElementById('jarak-status');
+            let pesanError = "Gagal mengambil lokasi.";
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    pesanError = "Pengguna menolak permintaan akses Lokasi (GPS). Anda harus mengizinkannya di setelan/browser pop-up.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    pesanError = "Informasi lokasi tidak tersedia atau sinyal GPS lemah.";
+                    break;
+                case error.TIMEOUT:
+                    pesanError = "Waktu untuk mendapatkan lokasi habis. Pastikan GPS menyala.";
+                    break;
+            }
+            statusLokasi.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${pesanError}`;
+            statusLokasi.className = 'text-xs text-red-600 font-medium mt-2';
+            showModal('error', 'Gagal Deteksi Lokasi', pesanError);
+            resetBtnLokasi();
+        }
+
+        function resetBtnLokasi() {
+            const btnLokasi = document.getElementById('btn-lokasi');
+            btnLokasi.innerHTML = '<i class="fas fa-map-marker-alt"></i> Hitung';
+            btnLokasi.disabled = false;
+        }
     </script>
 
     <!-- FIREBASE REALTIME DATABASE LOGIC -->
@@ -579,10 +664,16 @@
             });
             document.getElementById('btn-submit').disabled = false;
             
-            // Kunci input NISN agar tidak diubah setelah tervalidasi
+            // Kunci input NISN dan tombol lokasi agar tidak diubah setelah tervalidasi
             document.getElementById('fd_nisn').disabled = true;
             document.getElementById('fd_nisn').classList.add('bg-gray-100', 'cursor-not-allowed', 'opacity-70');
             document.getElementById('btn-cek-nisn').disabled = true;
+
+            const btnLokasi = document.getElementById('btn-lokasi');
+            if(btnLokasi) {
+                btnLokasi.disabled = false;
+                btnLokasi.classList.remove('bg-gray-100', 'cursor-not-allowed', 'opacity-70');
+            }
 
             const statusEl = document.getElementById('nisn-status');
             statusEl.innerHTML = '<i class="fas fa-unlock"></i> NISN belum terdaftar. Form dibuka, silakan lanjut.';
@@ -596,6 +687,12 @@
         document.getElementById('form-pendaftaran').addEventListener('reset', () => {
             setTimeout(() => {
                 lockForm();
+                // Reset styling/teks status GPS
+                const statusLokasi = document.getElementById('jarak-status');
+                if(statusLokasi) {
+                    statusLokasi.innerHTML = '<i class="fas fa-info-circle"></i> Klik tombol untuk menghitung jarak otomatis dari GPS perangkat.';
+                    statusLokasi.className = 'text-xs text-indigo-600 font-medium mt-2';
+                }
                 // Sembunyikan field input 'Lainnya' jika terbuka
                 document.querySelectorAll('.hidden.mt-2').forEach(el => el.classList.add('hidden'));
             }, 10);
